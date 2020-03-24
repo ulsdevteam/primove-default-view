@@ -16,5 +16,8 @@ prm-search > md-content.md-primoExplore-theme .main {
 }
 
 */
+/*Top Nav Bar*/
+prm-topbar .top-nav-bar{background-color:#003594;border-bottom: 3px solid #FFB81C;}
 
-
+/*Search Bar*/
+prm-search-bar {background-color:#003594;}
