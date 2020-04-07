@@ -25,3 +25,6 @@ prm-search-bar, prm-browse-search-bar, prm-search-bar .advanced-search-backdrop 
 
 /*Search Text*/
 prm-search-bar .search-switch-buttons .md-button.switch-to-simple{color:#fff;}
+
+/* Search Result Text */
+prm-brief-result .item-title span {color: #003594}
