@@ -16,6 +16,60 @@ prm-search > md-content.md-primoExplore-theme .main {
 }
 
 */
+
+/* Import Open Sans and Rubik Fonts from Google */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+/* Update Font to Open Sans Font Family */
+body,
+.mat-badge-content,
+.mat-h1,.mat-headline,.mat-typography h1,
+.mat-h2,.mat-title,.mat-typography h2,
+.mat-h3,.mat-subheading-2,.mat-typography h3,
+.mat-h4,.mat-subheading-1,.mat-typography h4,
+.mat-h5,.mat-typography h5,
+.mat-h6,.mat-typography h6,
+.mat-body-2,.mat-body-strong,
+.mat-body,.mat-body-1,.mat-typography,
+.mat-caption,.mat-small,
+.mat-display-4,.mat-typography .mat-display-4,
+.mat-display-3,.mat-typography .mat-display-3,
+.mat-display-2,.mat-typography .mat-display-2,
+.mat-display-1,.mat-typography .mat-display-1,
+.mat-bottom-sheet-container,
+.mat-button,.mat-fab,.mat-flat-button,.mat-icon-button,.mat-mini-fab,.mat-raised-button,.mat-stroked-button,
+.mat-button-toggle,.mat-card,
+.mat-checkbox,
+.mat-table,
+.mat-calendar,
+.mat-dialog-title,
+.mat-expansion-panel-header,
+.mat-expansion-panel-content,
+.mat-form-field,
+.mat-menu-item,
+.mat-paginator,.mat-paginator-page-size .mat-select-trigger,
+.mat-radio-button,.mat-select,
+.mat-slide-toggle-content,
+.mat-slider-thumb-label-text,
+.mat-stepper-horizontal,.mat-stepper-vertical,
+.mat-tab-group,
+.mat-tab-label,.mat-tab-link,
+.mat-toolbar,.mat-toolbar h1,.mat-toolbar h2,.mat-toolbar h3,.mat-toolbar h4,.mat-toolbar h5,.mat-toolbar h6,
+.mat-tooltip,
+.mat-list-item,.mat-list-option,
+.mat-list-base[dense] .mat-subheader,
+.mat-option,
+.mat-optgroup-label,
+.mat-simple-snackbar,
+.mat-list-base .mat-subheader,
+.mat-tree,
+.md-button
+	{font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;}
+
+/* Update Font to Rubik Font Family */
+.md-headline
+	{font-weight: 700; font-family: "Rubik", 'Helvetica', Arial, sans-serif;}
+
 /*Top Nav Bar*/
 prm-topbar .top-nav-bar{background-color:#00205B;}
 prm-topbar {height: 70px; position: relative;}
@@ -28,3 +82,11 @@ prm-search-bar .search-switch-buttons .md-button.switch-to-simple{color:#fff;}
 
 /* Search Result Text */
 prm-brief-result .item-title span {color: #003594}
+
+/* Sign in and Overlay Pop-up Link Items to Pitt Yellow */
+.light-on-dark-dialog .md-button.button-as-link, .light-on-dark-dialog .bar prm-authentication .md-button, .bar prm-authentication .light-on-dark-dialog .md-button, 
+button.button-large.button-confirm.animate-scale.animate-enter-leave-scale-bounce.md-button.md-primoExplore-theme.md-ink-ripple, md-dialog.light-on-dark-dialog .error-color,
+button#signInBtn,
+.md-button.button-confirm, .service-form-static-panel button.button-confirm prm-icon + span, .service-form-static-panel button.button-confirm prm-icon svg path,
+prm-main-menu[menu-type=full] .md-button .md-headline, prm-main-menu[menu-type=full] .overlay-menu-item .md-headline
+	{color: #FFB81C;}
