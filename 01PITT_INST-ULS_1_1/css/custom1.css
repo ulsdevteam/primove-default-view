@@ -1,6 +1,6 @@
 
 
-/*Uncomment the follwoing lines to move facets to the left*/
+/*Uncomment the following lines to move facets to the left*/
 
 /*
 prm-search > md-content.md-primoExplore-theme .main {
@@ -92,7 +92,16 @@ prm-main-menu[menu-type=full] .md-button .md-headline, prm-main-menu[menu-type=f
 	{color: #FFB81C;}
 
 
-/* Override the CSS that scales the checkboxes for the facets down to zero. Basically, we want the facet checkboxes to always be visible. */
+/* Override the CSS that hides the checkboxes for the facets by scaling them down to zero. Basically, we want the facet checkboxes to always be visible. */
 .multiselect-facet-group.multiselect-inactive .md-chip md-checkbox {
 	transform: scale3d(1,1,1);
 }
+
+
+/* Override the CSS that hides the exclude buttons for facets */
+.available-facets .section-content .md-chips .md-chip  .md-button {
+	z-index: 1;
+	opacity: 1;
+}
+
+
