@@ -90,3 +90,9 @@ button#signInBtn,
 .md-button.button-confirm, .service-form-static-panel button.button-confirm prm-icon + span, .service-form-static-panel button.button-confirm prm-icon svg path,
 prm-main-menu[menu-type=full] .md-button .md-headline, prm-main-menu[menu-type=full] .overlay-menu-item .md-headline
 	{color: #FFB81C;}
+
+
+/* Override the CSS that scales the checkboxes for the facets down to zero. Basically, we want the facet checkboxes to always be visible. */
+.multiselect-facet-group.multiselect-inactive .md-chip md-checkbox {
+	transform: scale3d(1,1,1);
+}
