@@ -105,4 +105,6 @@ prm-main-menu[menu-type=full] .md-button .md-headline, prm-main-menu[menu-type=f
 	color: rgb(58, 58, 58);
 }
 
-
+.available-facets .section-content .md-chips .md-chip:hover  .md-button {
+	color: tomato;
+}
