@@ -102,6 +102,7 @@ prm-main-menu[menu-type=full] .md-button .md-headline, prm-main-menu[menu-type=f
 .available-facets .section-content .md-chips .md-chip  .md-button {
 	z-index: 1;
 	opacity: 1;
+	color: rgb(58, 58, 58);
 }
 
 
