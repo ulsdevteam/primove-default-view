@@ -108,3 +108,12 @@ prm-main-menu[menu-type=full] .md-button .md-headline, prm-main-menu[menu-type=f
 .available-facets .section-content .md-chips .md-chip:hover  .md-button {
 	color: tomato;
 }
+
+/* Shifting facets right to give the checkboxes room */
+.section-content .md-chips .md-chip .md-chip-content {
+	padding-left: 2em;
+}
+
+.multiselect-facet-group .md-chip .md-chip-content md-checkbox {
+	left: 5px;
+}
