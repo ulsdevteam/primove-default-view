@@ -130,13 +130,13 @@ button.button-with-menu-arrow.md-button.md-primoExplore-theme.md-ink-ripple:hove
 	text-align:Center;background-color:#FFB81C;}
 
 #ulsimg{
-	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/ULS_Cathedral.jpg);
+	background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/ULS_Cathedral.jpg);
 	background-repeat:no-repeat;min-height:10em;background-size:100%;}
 
 #barcoimg{
-	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/barcolaw.jpg);
+	background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/barcolaw.jpg);
 	background-repeat:no-repeat;min-height:10em;background-size:100%;}
 
 #hslsimg{
-	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/hsls.jpg);
+	background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/hsls.jpg);
 	background-repeat:no-repeat;min-height:10em;background-size:100%;}
