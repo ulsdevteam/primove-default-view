@@ -121,3 +121,22 @@ button.button-with-menu-arrow.md-button.md-primoExplore-theme.md-ink-ripple:hove
 .multiselect-facet-group .md-chip .md-chip-content md-checkbox {
 	left: 5px;
 }
+
+/*Library Blocks on Homepage*/
+#ulsblock, #lawblock, #hslsblock{
+	width:31.5%;margin:.5em; float:left;}
+
+.title{
+	text-align:Center;background-color:#FFB81C;}
+
+#ulsimg{
+	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/ULS_Cathedral.jpg);
+	background-repeat:no-repeat;min-height:10em;background-size:100%;}
+
+#barcoimg{
+	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/barcolaw.jpg);
+	background-repeat:no-repeat;min-height:10em;background-size:100%;}
+
+#hslsimg{
+	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/hsls.jpg);
+	background-repeat:no-repeat;min-height:10em;background-size:100%;}
