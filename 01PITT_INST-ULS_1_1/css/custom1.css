@@ -89,8 +89,12 @@ button#signInBtn {color: #FFB81C;}
 /* Sign-in Text Hover*/
 button#signInBtn:hover {color: #FFF;}
 
-/*Top bar Center Button Text Hover */
+/*Top Navi Bar Center Buttons Text Hover */
 prm-topbar .md-button .item-content:hover {color:#FFB81c;}
+
+/*Top Navi Bar Menu Button Text Hover */
+button.button-with-menu-arrow.md-button.md-primoExplore-theme.md-ink-ripple:hover
+{color:#FFB81c;}
 
 /* Override the CSS that hides the checkboxes for the facets by scaling them down to zero. Basically, we want the facet checkboxes to always be visible. */
 .multiselect-facet-group.multiselect-inactive .md-chip md-checkbox {
