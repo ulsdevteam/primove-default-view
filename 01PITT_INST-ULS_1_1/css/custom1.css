@@ -143,3 +143,7 @@ button.button-with-menu-arrow.md-button.md-primoExplore-theme.md-ink-ripple:hove
 #hslsimg{
 	background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/hsls.jpg);
 	background-repeat:no-repeat;min-height:10em;background-size:100%;}
+
+@media only screen and (max-width: 894px) {#ulsblock, #lawblock, #hslsblock{
+width:55%;
+  margin-top:1em; float:none;}}
