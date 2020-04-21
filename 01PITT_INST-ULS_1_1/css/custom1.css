@@ -126,6 +126,9 @@ button.button-with-menu-arrow.md-button.md-primoExplore-theme.md-ink-ripple:hove
 #ulsblock, #lawblock, #hslsblock{
 	width:31.5%;margin:.5em; float:left;}
 
+#ulsblock a, #lawblock a, #hslsblock a{
+	text-decoration:underline;}
+
 .title{
 	text-align:Center;background-color:#FFB81C;}
 
