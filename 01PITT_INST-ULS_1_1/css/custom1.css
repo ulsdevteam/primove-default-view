@@ -83,14 +83,14 @@ prm-search-bar .search-switch-buttons .md-button.switch-to-simple{color:#fff;}
 /* Search Result Text */
 prm-brief-result .item-title span {color: #003594}
 
-/* Sign in and Overlay Pop-up Link Items to Pitt Yellow */
-.light-on-dark-dialog .md-button.button-as-link, .light-on-dark-dialog .bar prm-authentication .md-button, .bar prm-authentication .light-on-dark-dialog .md-button, 
-button.button-large.button-confirm.animate-scale.animate-enter-leave-scale-bounce.md-button.md-primoExplore-theme.md-ink-ripple, md-dialog.light-on-dark-dialog .error-color,
-button#signInBtn,
-.md-button.button-confirm, .service-form-static-panel button.button-confirm prm-icon + span, .service-form-static-panel button.button-confirm prm-icon svg path,
-prm-main-menu[menu-type=full] .md-button .md-headline, prm-main-menu[menu-type=full] .overlay-menu-item .md-headline
-	{color: #FFB81C;}
+/* Sign-in Text*/
+button#signInBtn {color: #FFB81C;}
 
+/* Sign-in Text Hover*/
+button#signInBtn:hover {color: #FFF;}
+
+/*Top bar Center Button Text Hover */
+prm-topbar .md-button .item-content:hover {color:#FFB81c;}
 
 /* Override the CSS that hides the checkboxes for the facets by scaling them down to zero. Basically, we want the facet checkboxes to always be visible. */
 .multiselect-facet-group.multiselect-inactive .md-chip md-checkbox {
