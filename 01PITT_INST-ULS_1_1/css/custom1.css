@@ -96,15 +96,26 @@ prm-topbar .md-button .item-content:hover {color:#FFB81c;}
 button.button-with-menu-arrow.md-button.md-primoExplore-theme.md-ink-ripple:hover {color:#FFB81c;}
 
 /* Moving Pin Color*/
-prm-search-bookmark-filter .fixed-to-top #favorites-button {color: #fff;}
+prm-search-bookmark-filter .fixed-to-top #favorites-button {
+	color: #fff;
+	background-color: rgba(58,58,58,.5);
+}
 
 /* Moving Top of Page Arrow Color*/
-prm-search-bookmark-filter #back-to-top-button {color:#FFB81c;}
+prm-search-bookmark-filter #back-to-top-button {
+	color:#FFB81c;
+	background-color: rgba(58,58,58,.5);
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	padding: 8px;
+}
 
 /* Override the CSS that hides the checkboxes for the facets by scaling them down to zero. Basically, we want the facet checkboxes to always be visible. */
 .multiselect-facet-group.multiselect-inactive .md-chip md-checkbox {
 	transform: scale3d(1,1,1);
 }
+
 
 
 /* Override the CSS that hides the exclude buttons for facets */
@@ -152,3 +163,4 @@ prm-search-bookmark-filter #back-to-top-button {color:#FFB81c;}
 @media only screen and (max-width: 894px) {#ulsblock, #lawblock, #hslsblock{
 width:55%;
   margin-top:1em; float:none;}}
+
