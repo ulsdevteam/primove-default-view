@@ -116,7 +116,7 @@ prm-search-bookmark-filter .fixed-to-top #favorites-button {
 }
 
 /* Moving Pin Color Hover*/
-prm-search-bookmark-filter .fixed-to-top #favorites-button {color:#FFB81c;}
+prm-search-bookmark-filter .fixed-to-top #favorites-button:hover {color:#FFB81c;}
 
 /* Moving Top of Page Arrow Color*/
 prm-search-bookmark-filter #back-to-top-button {
