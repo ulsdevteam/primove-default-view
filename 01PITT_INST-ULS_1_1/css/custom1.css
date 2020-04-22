@@ -66,10 +66,6 @@ body,
 .md-button
 	{font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;}
 
-/* Update Font to Rubik Font Family */
-.md-headline
-	{font-weight: 700; font-family: "Rubik", 'Helvetica', Arial, sans-serif;}
-
 /*Top Nav Bar*/
 prm-topbar .top-nav-bar{background-color:#00205B;}
 prm-topbar {height: 70px; position: relative;}
@@ -83,14 +79,32 @@ prm-search-bar .search-switch-buttons .md-button.switch-to-simple{color:#fff;}
 /* Search Result Text */
 prm-brief-result .item-title span {color: #003594}
 
-/* Sign-in Text*/
-button#signInBtn {color: #FFB81C;}
+/*Advanced Search Button Hover */
+prm-search-bar .search-switch-buttons .md-button.switch-to-advanced:hover {color: #FFB81c;}
 
-/* Sign-in Text Hover*/
-button#signInBtn:hover {color: #FFF;}
+/*Top Navi Bar Center Buttons Text*/
+prm-topbar .md-button .item-content {color:#fff;}
 
 /*Top Navi Bar Center Buttons Text Hover */
 prm-topbar .md-button .item-content:hover {color:#FFB81c;}
+
+/*Top Navi Bar Icons */
+a.md-icon-button.button-over-dark.md-button.md-primoExplore-theme.md-ink-ripple {color:#fff;}
+
+/*Top Navi Bar Icons Hover */
+a.md-icon-button.button-over-dark.md-button.md-primoExplore-theme.md-ink-ripple:hover {color:#FFB81c;}
+
+/* Sign-in Text*/
+button#signInBtn {
+	color: #fff;
+	font-weight: bold;
+}	
+
+/* Sign-in Text Hover*/
+button#signInBtn:hover {color: #FFB81c;}
+
+/*Top Navi Bar Menu Button Text */
+button.button-with-menu-arrow.md-button.md-primoExplore-theme.md-ink-ripple {color:#fff;}
 
 /*Top Navi Bar Menu Button Text Hover */
 button.button-with-menu-arrow.md-button.md-primoExplore-theme.md-ink-ripple:hover {color:#FFB81c;}
@@ -101,15 +115,23 @@ prm-search-bookmark-filter .fixed-to-top #favorites-button {
 	background-color: rgba(58,58,58,.5);
 }
 
+/* Moving Pin Color Hover*/
+prm-search-bookmark-filter .fixed-to-top #favorites-button {color:#FFB81c;}
+
 /* Moving Top of Page Arrow Color*/
 prm-search-bookmark-filter #back-to-top-button {
-	color:#FFB81c;
+	color:#fff;
 	background-color: rgba(58,58,58,.5);
 	border-radius: 50%;
 	width: 40px;
 	height: 40px;
 	padding: 8px;
 }
+
+/* Moving Top of Page Arrow Color Hover*/
+prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
+
+
 
 /* Override the CSS that hides the checkboxes for the facets by scaling them down to zero. Basically, we want the facet checkboxes to always be visible. */
 .multiselect-facet-group.multiselect-inactive .md-chip md-checkbox {
