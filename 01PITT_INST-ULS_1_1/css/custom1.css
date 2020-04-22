@@ -128,6 +128,15 @@ prm-search-bookmark-filter #back-to-top-button {
 	padding: 8px;
 }
 
+/* Increasing the speed of the hover transitions */
+prm-search-bookmark-filter #fixed-buttons-holder #back-to-top-button md-icon,
+prm-search-bookmark-filter #fixed-buttons-holder #back-to-top-button md-icon svg,
+prm-search-bookmark-filter #fixed-buttons-holder #favorites-button md-icon,
+prm-search-bookmark-filter #fixed-buttons-holder #favorites-button md-icon svg {
+	transition: all 50ms linear 0s;
+}
+
+
 /* Moving Top of Page Arrow Color Hover*/
 prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
 
