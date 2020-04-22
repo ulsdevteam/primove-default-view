@@ -74,7 +74,10 @@ prm-topbar {height: 70px; position: relative;}
 prm-search-bar, prm-browse-search-bar, prm-search-bar .advanced-search-backdrop  {background-color:#003594;background-image:url(/discovery/custom/01PITT_INST-ULS_1_1/img/search_bg.png);}
 
 /*Search Text*/
-prm-search-bar .search-switch-buttons .md-button.switch-to-simple{color:#fff;}
+prm-search-bar .search-switch-buttons .md-button.switch-to-simple {color:#fff;}
+
+/*Search Text Hover*/
+prm-search-bar .search-switch-buttons .md-button.switch-to-simple {color: #FFB81c;}
 
 /* Search Result Text */
 prm-brief-result .item-title span {color: #003594}
