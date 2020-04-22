@@ -151,6 +151,15 @@ prm-search-bookmark-filter #fixed-buttons-holder #favorites-button md-icon svg {
 	transition: all 50ms linear 0s;
 }
 
+/*
+	Adding a divider between the two flexboxes in the advanced search dialog. Below 600px, the
+	two elements stack vertically, so we want to gate this behind a media query.
+*/
+@media only screen and (min-width: 600px) {
+	#advanced-search form .form-focus div.layout-xs-column.flex>md-card:nth-child(2) {
+		border-left: 2px solid #e1e1e1;
+	}
+}
 
 /* Moving Top of Page Arrow Color Hover*/
 prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
