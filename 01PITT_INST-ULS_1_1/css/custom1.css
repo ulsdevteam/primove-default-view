@@ -199,8 +199,11 @@ prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
 #ulsblock, #lawblock, #hslsblock{
 	width:100%; margin:.5em; flex-grow: 4; flex-basis: 30%;}
 
-.title{
+.landingpagetitle{
 	text-align:Center;background-color:#FFB81C;}
+
+.landingpagetitle h2{
+	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:16px;font-weight:600;}
 
 #ulsimg{
 	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/uls_cathedral.jpg);
