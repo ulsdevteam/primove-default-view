@@ -1,13 +1,13 @@
 var pittJS = function() {
-    var app;
+	var app;
 
 	function addGoogleAnalytics() {
-	    app.component('prmTopBarBefore', {
-	        template: `
+		app.component('prmTopBarBefore', {
+			template: `
 				<!-- Global site tag (gtag.js) - Google Analytics -->
 				<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129368242-1"></script>
-	        `
-	    });
+			`
+		});
 		window.dataLayer = window.dataLayer || [];
 		function gtag(){dataLayer.push(arguments);}
 		gtag('js', new Date());
@@ -16,19 +16,19 @@ var pittJS = function() {
 	}
 
 	function helloWorld() {
-	    app.component('prmTopBarBefore', {
-	        template: `<span style="margin-left: 40%;">Hello World</span>`
-	    });
+		app.component('prmTopBarBefore', {
+			template: `<span style="margin-left: 40%;">Hello World</span>`
+		});
 	}
 
 	function private_setup() {
 		app = angular.module('viewCustom', ['angularLoad']);
-	    console.log("Executing custom JS.");
+		console.log("Executing custom JS.");
 
-	    //helloWorld();
-	    addGoogleAnalytics();
-	    
-	    return;
+		//helloWorld();
+		addGoogleAnalytics();
+		
+		return;
 	}
 
 	return {
