@@ -2,7 +2,17 @@ var pittJS = function() {
     var app;
 
 	function addGoogleAnalytics() {
-		return;
+	    app.component('prmTopBarBefore', {
+	        template: `
+				<!-- Global site tag (gtag.js) - Google Analytics -->
+				<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129368242-1"></script>
+	        `
+	    });
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-129368242-1');
 	}
 
 	function helloWorld() {
@@ -15,7 +25,7 @@ var pittJS = function() {
 		app = angular.module('viewCustom', ['angularLoad']);
 	    console.log("Executing custom JS.");
 
-	    helloWorld();
+	    //helloWorld();
 	    addGoogleAnalytics();
 	    
 	    return;
