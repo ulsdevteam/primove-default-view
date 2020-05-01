@@ -71,7 +71,7 @@ prm-topbar .top-nav-bar{background-color:#00205B;}
 prm-topbar {height: 70px; position: relative;}
 
 /*Search Bar*/
-prm-search-bar, prm-browse-search-bar, prm-search-bar .advanced-search-backdrop  {background-color:#003594;background-image:url(/discovery/custom/01PITT_INST-ULS_1_1/img/search_bg.png);}
+prm-search-bar, prm-browse-search-bar, prm-search-bar .advanced-search-backdrop, prm-atoz-search-bar  {background-color:#003594;background-image:url(/discovery/custom/01PITT_INST-ULS_1_1/img/search_bg.png);}
 
 /*Search Text*/
 prm-search-bar .search-switch-buttons .md-button.switch-to-simple {color:#fff;}
