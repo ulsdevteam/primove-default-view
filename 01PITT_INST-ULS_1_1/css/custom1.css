@@ -206,8 +206,9 @@ prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
 	font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:18px;font-weight:300;}
 
 #ulsimg{
-	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/uls_cathedral.jpg);
-	background-repeat:no-repeat;min-height:10em;}
+	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/uls.jpg);
+	background-repeat:no-repeat;min-height:10em;
+	background-position:center;}
 
 #barcoimg{
 	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/barcolaw.jpg);
@@ -215,7 +216,8 @@ prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
 
 #hslsimg{
 	background-image: url(https://library.pitt.edu/sites/default/files/images/uls/hsls.jpg);
-	background-repeat:no-repeat;min-height:10em;}
+	background-repeat:no-repeat;min-height:10em;
+	background-position:center;}
 
 
 @media only screen and (max-width: 1060px) {
