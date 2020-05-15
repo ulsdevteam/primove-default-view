@@ -217,11 +217,11 @@ prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
 
 #hslsimg:hover{opacity:.5;}
 
-@media only screen and (max-width: 1060px) {#libcontainer{min-width:0;}#ulsblock, #lawblock, #hslsblock{flex-basis:100%;}#hslsimg, #ulsimg, #barcoimg{background-size:100%;}}
-@media only screen and (max-width: 660px){#hslsimg, #ulsimg, #barcoimg{background-size:auto;}}
+@media only screen and (max-width: 1060px) {#libcontainer{min-width:0;}#ulsblock, #lawblock, #hslsblock{flex-basis:100%;}#hslsimg, #uls, #barcoimg{background-size:100%;}}
+@media only screen and (max-width: 660px){#hslsimg, #uls, #barcoimg{background-size:auto;}}
 
 @media only screen and (max-width: 1060px) {
-	#libcontainer{min-width:0;}#ulsblock, #lawblock, #hslsblock{flex-basis:100%;}#hslsimg, #ulsimg, #barcoimg{background-size:100%;}}
+	#libcontainer{min-width:0;}#ulsblock, #lawblock, #hslsblock{flex-basis:100%;}#hslsimg, #uls, #barcoimg{background-size:100%;}}
 @media only screen and (max-width: 660px){
-	#hslsimg, #ulsimg, #barcoimg{background-size:auto;}}
+	#hslsimg, #uls, #barcoimg{background-size:auto;}}
 
