@@ -202,20 +202,23 @@ prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
 
 .landingpagetitle h2{font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:18px;font-weight:300;}
 
-#uls{background-image: url(https://library.pitt.edu/sites/default/files/images/uls/ULS.jpg);
+#uls{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/ULS.jpg);
 	text-indent:-9999px;display:block;width:100%;height:150px;}
 
-#uls:hover{opacity:.5;}
+#uls:hover{opacity: 0.6;
+  transition: background ease 0.4s;background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/ulshover.jpg);}
 
-#barcoimg{background-image: url(https://library.pitt.edu/sites/default/files/images/uls/barcolaw.jpg);
+#barcoimg{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/barcolaw.jpg);
 	text-indent:-9999px;display:block;width:100%;height:150px;}
 
-#barcoimg:hover{opacity:.5;}
+#barcoimg:hover{opacity: 0.6;
+  transition: background ease 0.4s;background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/barcohover.jpg);}
 
-#hslsimg{background-image: url(https://library.pitt.edu/sites/default/files/images/uls/hsls.jpg);
+#hslsimg{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/hsls.jpg);
 	text-indent:-9999px;display:block;width:100%;height:150px;}
 
-#hslsimg:hover{opacity:.5;}
+#hslsimg:hover{opacity: 0.6;
+  transition: background ease 0.4s;background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/hslshover.jpg);}
 
 @media only screen and (max-width: 1060px) {#libcontainer{min-width:0;}#ulsblock, #lawblock, #hslsblock{flex-basis:100%;}#hslsimg, #uls, #barcoimg{background-size:100%;}}
 @media only screen and (max-width: 660px){#hslsimg, #uls, #barcoimg{background-size:auto;}}
