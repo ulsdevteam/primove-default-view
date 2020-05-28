@@ -1,6 +1,7 @@
 var pittJS = function() {
 	var app;
-
+	var images = [];
+f
 	function addGoogleAnalytics() {
 		app.component('prmTopBarBefore', {
 			template: `
@@ -34,9 +35,23 @@ var pittJS = function() {
 		});
 	}
 
+	function preload() {
+	    for (var i = 0; i < arguments.length; i++) {
+	        images[i] = new Image();
+	        images[i].src = preload.arguments[i];
+	    }
+	}
+
 	function privateSetup() {
 		app = angular.module('viewCustom', ['angularLoad']);
 		console.log("Executing custom JS.");
+
+		// homepage preloading
+		preload(
+		    "/discovery/custom/01PITT_INST-ULS_1_1/img/ulshover.jpg",
+		    "/discovery/custom/01PITT_INST-ULS_1_1/img/barcohover.jpg",
+		    "/discovery/custom/01PITT_INST-ULS_1_1/img/hslshover.jpg"
+		);
 
 		//helloWorld();
 		angular.element(function () {
