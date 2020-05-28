@@ -46,13 +46,6 @@ f
 		app = angular.module('viewCustom', ['angularLoad']);
 		console.log("Executing custom JS.");
 
-		// homepage preloading
-		preload(
-		    "/discovery/custom/01PITT_INST-ULS_1_1/img/ulshover.jpg",
-		    "/discovery/custom/01PITT_INST-ULS_1_1/img/barcohover.jpg",
-		    "/discovery/custom/01PITT_INST-ULS_1_1/img/hslshover.jpg"
-		);
-
 		//helloWorld();
 		angular.element(function () {
     		console.log('page loading completed');
