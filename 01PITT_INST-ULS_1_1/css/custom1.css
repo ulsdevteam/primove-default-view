@@ -164,7 +164,10 @@ prm-search-bookmark-filter #fixed-buttons-holder #favorites-button md-icon svg {
 /* Moving Top of Page Arrow Color Hover*/
 prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
 
-
+/* Changing Newspapers search button-as-link color */
+prm-newspapers-facet > .md-button.button-as-link {
+	color:rgb(0,0,0);
+}
 
 /* Override the CSS that hides the checkboxes for the facets by scaling them down to zero. Basically, we want the facet checkboxes to always be visible. */
 .multiselect-facet-group.multiselect-inactive .md-chip md-checkbox {
