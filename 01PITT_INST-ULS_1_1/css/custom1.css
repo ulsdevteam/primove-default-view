@@ -1,0 +1,240 @@
+
+
+/*Uncomment the following lines to move facets to the left*/
+
+/*
+prm-search > md-content.md-primoExplore-theme .main {
+    display: -webkit-flex; !* Safari *!
+    -webkit-flex-flow: row-reverse wrap; !* Safari 6.1+ *!
+    display: flex;
+    flex-flow: row-reverse wrap;
+
+}
+.screen-gt-sm .sidebar{
+    webkit-flex: 0 0 15%;
+    flex: 0 0 15%;
+}
+
+*/
+
+/* Import Open Sans and Rubik Fonts from Google */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+/* Update Font to Open Sans Font Family */
+body,
+.mat-badge-content,
+.mat-h1,.mat-headline,.mat-typography h1,
+.mat-h2,.mat-title,.mat-typography h2,
+.mat-h3,.mat-subheading-2,.mat-typography h3,
+.mat-h4,.mat-subheading-1,.mat-typography h4,
+.mat-h5,.mat-typography h5,
+.mat-h6,.mat-typography h6,
+.mat-body-2,.mat-body-strong,
+.mat-body,.mat-body-1,.mat-typography,
+.mat-caption,.mat-small,
+.mat-display-4,.mat-typography .mat-display-4,
+.mat-display-3,.mat-typography .mat-display-3,
+.mat-display-2,.mat-typography .mat-display-2,
+.mat-display-1,.mat-typography .mat-display-1,
+.mat-bottom-sheet-container,
+.mat-button,.mat-fab,.mat-flat-button,.mat-icon-button,.mat-mini-fab,.mat-raised-button,.mat-stroked-button,
+.mat-button-toggle,.mat-card,
+.mat-checkbox,
+.mat-table,
+.mat-calendar,
+.mat-dialog-title,
+.mat-expansion-panel-header,
+.mat-expansion-panel-content,
+.mat-form-field,
+.mat-menu-item,
+.mat-paginator,.mat-paginator-page-size .mat-select-trigger,
+.mat-radio-button,.mat-select,
+.mat-slide-toggle-content,
+.mat-slider-thumb-label-text,
+.mat-stepper-horizontal,.mat-stepper-vertical,
+.mat-tab-group,
+.mat-tab-label,.mat-tab-link,
+.mat-toolbar,.mat-toolbar h1,.mat-toolbar h2,.mat-toolbar h3,.mat-toolbar h4,.mat-toolbar h5,.mat-toolbar h6,
+.mat-tooltip,
+.mat-list-item,.mat-list-option,
+.mat-list-base[dense] .mat-subheader,
+.mat-option,
+.mat-optgroup-label,
+.mat-simple-snackbar,
+.mat-list-base .mat-subheader,
+.mat-tree,
+.md-button
+	{font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;}
+
+/*Top Nav Bar*/
+prm-topbar .top-nav-bar{background-color:#00205B;}
+prm-topbar {height: 70px; position: relative;}
+
+/*Search Bar*/
+prm-search-bar, prm-browse-search-bar, prm-search-bar .advanced-search-backdrop, prm-atoz-search-bar  {background-color:#003594;background-image:url(/discovery/custom/01PITT_INST-ULS_1_1/img/search_bg.png);}
+
+/*Search Text*/
+prm-search-bar .search-switch-buttons .md-button.switch-to-simple {color:#fff;}
+
+/*Search Text Hover*/
+prm-search-bar .search-switch-buttons .md-button.switch-to-simple:hover {color: #FFB81c;}
+
+/* Search Result Text */
+prm-brief-result .item-title span {color: #003594}
+
+/*Advanced Search Button Hover */
+prm-search-bar .search-switch-buttons .md-button.switch-to-advanced:hover {color: #FFB81c;}
+
+/*Top Navi Bar Center Buttons Text*/
+prm-topbar .md-button .item-content {color:#fff;}
+
+/*Top Navi Bar Center Buttons Text Hover */
+prm-topbar .md-button .item-content:hover {color:#FFB81c;}
+
+/*Top Navi Bar Icons */
+a.md-icon-button.button-over-dark.md-button.md-primoExplore-theme.md-ink-ripple {color:#fff;}
+
+/*Top Navi Bar Icons Hover */
+a.md-icon-button.button-over-dark.md-button.md-primoExplore-theme.md-ink-ripple:hover {color:#FFB81c;}
+
+/* Sign-in Text*/
+button#signInBtn {
+	color: #fff;
+	font-weight: bold;
+}	
+
+/* Sign-in Text Hover*/
+button#signInBtn:hover {color: #FFB81c;}
+
+/* Sign-out Button*/
+button#signOutButton {
+    background-color: #f7eda3;
+    color: #003594;
+}
+
+/* Sign-out Button Hover*/
+button#signOutButton:hover {
+    color: #fff;
+    background-color: #003594;
+}
+
+/*Top Navi Bar Menu Button Text */
+button.button-with-menu-arrow.md-button.md-primoExplore-theme.md-ink-ripple {color:#fff;}
+
+/*Top Navi Bar Menu Button Text Hover */
+button.button-with-menu-arrow.md-button.md-primoExplore-theme.md-ink-ripple:hover {color:#FFB81c;}
+
+/* Moving Pin Color*/
+prm-search-bookmark-filter .fixed-to-top #favorites-button {
+	color: #fff;
+	background-color: rgba(58,58,58,.5);
+}
+
+/* Moving Pin Color Hover*/
+prm-search-bookmark-filter .fixed-to-top #favorites-button:hover {color:#FFB81c;}
+
+/* Moving Top of Page Arrow Color*/
+prm-search-bookmark-filter #back-to-top-button {
+	color:#fff;
+	background-color: rgba(58,58,58,.5);
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	padding: 8px;
+}
+
+/* Increasing the speed of the hover transitions */
+prm-search-bookmark-filter #fixed-buttons-holder #back-to-top-button md-icon,
+prm-search-bookmark-filter #fixed-buttons-holder #back-to-top-button md-icon svg,
+prm-search-bookmark-filter #fixed-buttons-holder #favorites-button md-icon,
+prm-search-bookmark-filter #fixed-buttons-holder #favorites-button md-icon svg {
+	transition: all 50ms linear 0s;
+}
+
+/*
+	Adding a divider between the two flexboxes in the advanced search dialog. Below 600px, the
+	two elements stack vertically, so we want to gate this behind a media query.
+*/
+@media only screen and (min-width: 600px) {
+	#advanced-search form .form-focus div.layout-xs-column.flex>md-card:nth-child(2) {
+		border-left: 2px solid #e1e1e1;
+	}
+}
+
+/* Moving Top of Page Arrow Color Hover*/
+prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
+
+/* Changing Newspapers search button-as-link color */
+prm-newspapers-facet > .md-button.button-as-link {
+	color:rgb(0,0,0);
+}
+
+/* Remove the exclude button for OpenAccess */
+.multiselect-facet-group .section-content div.md-chip[data-facet-value*="tlevel-open_access"] div.md-chip-remove-container {
+	display:none;
+}
+
+/* Remove the last LI in the UL saying there are no results for your search */
+prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
+	display:none;
+}
+
+/* Override the CSS that hides the checkboxes for the facets by scaling them down to zero. Basically, we want the facet checkboxes to always be visible. */
+.multiselect-facet-group.multiselect-inactive .md-chip md-checkbox {
+	transform: scale3d(1,1,1);
+}
+
+
+
+/* Override the CSS that hides the exclude buttons for facets */
+.available-facets .section-content .md-chips .md-chip  .md-button {
+	z-index: 1;
+	opacity: 1;
+	color: rgb(58, 58, 58);
+}
+
+.available-facets .section-content .md-chips .md-chip:hover  .md-button {
+	color: tomato;
+}
+
+/* Shifting facets right to give the checkboxes room */
+.section-content .md-chips .md-chip .md-chip-content {
+	padding-left: 2em;
+}
+
+.multiselect-facet-group .md-chip .md-chip-content md-checkbox {
+	left: 5px;
+}
+
+/*Library Blocks on Homepage*/
+#libcontainer{display:flex;align-items:start;flex-wrap:wrap;flex-direction:row;min-width:980px;max-width:980px;}
+
+#ulsblock, #lawblock, #hslsblock{width:100%;margin:.5em; flex-grow: 4;flex-basis: 30%;}
+
+.landingpagetitle{text-align:Center;background-color:#FFB81C;}
+
+.landingpagetitle h2{font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:18px;font-weight:300;}
+
+#uls{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/uls.jpg);
+	text-indent:-9999px;display:block;width:100%;height:150px;}
+
+#uls:hover{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/ulshover.jpg);}
+
+#barcoimg{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/barcolaw.jpg);
+	text-indent:-9999px;display:block;width:100%;height:150px;}
+
+#barcoimg:hover{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/barcohover.jpg);}
+
+#hslsimg{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/hsls.jpg);
+	text-indent:-9999px;display:block;width:100%;height:150px;}
+
+#hslsimg:hover{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/hslshover.jpg);}
+
+@media only screen and (max-width: 1060px) {#libcontainer{min-width:0;}#ulsblock, #lawblock, #hslsblock{flex-basis:100%;}#hslsimg, #uls, #barcoimg{background-size:100%;}}
+@media only screen and (max-width: 660px){#hslsimg, #uls, #barcoimg{background-size:auto;}}
+
+@media only screen and (max-width: 1060px) {
+	#libcontainer{min-width:0;}#ulsblock, #lawblock, #hslsblock{flex-basis:100%;}#hslsimg, #uls, #barcoimg{background-size:100%;}}
+@media only screen and (max-width: 660px){
+	#hslsimg, #uls, #barcoimg{background-size:auto;}}
+
