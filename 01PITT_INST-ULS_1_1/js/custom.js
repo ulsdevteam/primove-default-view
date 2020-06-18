@@ -29,6 +29,15 @@ f
 		}
 	}
 
+	/*
+	 * Adds a link to our help page in each full record 
+	 */
+	function reportProblem() {
+		app.component('prmSearchResultAvailabilityLineAfter', {
+			template: '<br><span class="reportProblemLink"><a href="https://library.pitt.edu/askus?referringUrl='+window.location.href+'">Report a Problem</a></span>'
+		});
+	}
+
 	function helloWorld() {
 		app.component('prmTopBarBefore', {
 			template: `<span style="margin-left: 40%;">Hello World</span>`
