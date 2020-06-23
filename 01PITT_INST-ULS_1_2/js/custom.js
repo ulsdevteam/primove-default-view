@@ -69,7 +69,9 @@ f
 		angular.element(function () {
     		console.log('page loading completed');
     		addGoogleAnalytics();
-			newSearchSameTab();
+		newSearchSameTab();
+		reportProblem();
+		chatWidget();
 		});
 		
 		return;
