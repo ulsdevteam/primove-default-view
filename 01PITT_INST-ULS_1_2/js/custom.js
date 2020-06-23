@@ -36,6 +36,16 @@ f
 		app.component('prmSearchResultAvailabilityLineAfter', {
 			template: '<br><span class="reportProblemLink"><a href="https://library.pitt.edu/askus?referringUrl='+window.location.href+'">Report a Problem</a></span>'
 		});
+
+  /* libanswers chat widget 
+	 * from https://developers.exlibrisgroup.com/blog/embedding-springshare-libchat-widget-into-the-primo-nu/
+	 */
+	function chatWidget() {
+        var lc = document.createElement('script'); 
+		lc.type = 'text/javascript'; 		
+		lc.async = 'true';
+        lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'v2.libanswers.com/load_chat.php?hash=a962140fb4e6ffbcdae688be4c64cba5';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
 	}
 
 	function helloWorld() {
