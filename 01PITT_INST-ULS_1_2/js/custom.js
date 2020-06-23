@@ -29,7 +29,15 @@ f
 		}
 	}
 
-	/* libanswers chat widget 
+	/*
+	 * Adds a link to our help page in each full record 
+	 */
+	function reportProblem() {
+		app.component('prmSearchResultAvailabilityLineAfter', {
+			template: '<br><span class="reportProblemLink"><a href="https://library.pitt.edu/askus?referringUrl='+window.location.href+'">Report a Problem</a></span>'
+		});
+
+  /* libanswers chat widget 
 	 * from https://developers.exlibrisgroup.com/blog/embedding-springshare-libchat-widget-into-the-primo-nu/
 	 */
 	function chatWidget() {
