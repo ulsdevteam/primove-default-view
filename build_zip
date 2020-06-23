@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# just a quick thing to rebuild the zip file. Update the paths as needed.
+
+printf "\nRebuilding zip file.\n"
+
+rm 01PITT_INST-ULS_1_2.zip
+zip -r 01PITT_INST-ULS_1_2.zip 01PITT_INST-ULS_1_2/
+
+printf "\nRebuild complete.\n"
