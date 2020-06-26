@@ -39,9 +39,9 @@ var pittJS = function() {
 	 * Adds a link to our help page in each full record 
 	 */
 	function reportProblem() {
-		console.log("Loading the report problem script");
+		//console.log("Loading the report problem script");
 		app.component('prmSearchResultAvailabilityLineAfter', {
-			template: '<br><span class="reportProblemLink"><a href="https://library.pitt.edu/askus?referringUrl='+window.location.href+'">Report a Problem</a></span>'
+			template: '<br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl='+window.location.href+'">Report a Problem</a></span>'
 		});
 	}
 
