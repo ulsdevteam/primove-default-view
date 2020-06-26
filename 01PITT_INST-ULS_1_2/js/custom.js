@@ -1,7 +1,7 @@
 var pittJS = function() {
 	var app;
 	var images = [];
-f
+
 	function addGoogleAnalytics() {
 		app.component('prmTopBarBefore', {
 			template: `
@@ -33,11 +33,13 @@ f
 	 * Adds a link to our help page in each full record 
 	 */
 	function reportProblem() {
+		console.log("Loading the report problem script");
 		app.component('prmSearchResultAvailabilityLineAfter', {
 			template: '<br><span class="reportProblemLink"><a href="https://library.pitt.edu/askus?referringUrl='+window.location.href+'">Report a Problem</a></span>'
 		});
+	}
 
-  /* libanswers chat widget 
+	/* libanswers chat widget 
 	 * from https://developers.exlibrisgroup.com/blog/embedding-springshare-libchat-widget-into-the-primo-nu/
 	 */
 	function chatWidget() {
@@ -69,9 +71,9 @@ f
 		angular.element(function () {
     		console.log('page loading completed');
     		addGoogleAnalytics();
-		newSearchSameTab();
-		reportProblem();
-		chatWidget();
+			//newSearchSameTab();
+			reportProblem();
+			chatWidget();
 		});
 		
 		return;
