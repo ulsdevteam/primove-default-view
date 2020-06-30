@@ -230,6 +230,9 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
 
 #hslsimg:hover{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/hslshover.jpg);}
 
+/*LibChat Widget*/
+.lcs_slide_out-b header a { border-width: 0px; bottom:-5px;}
+
 /*============= Report a Problem Link ===============*/
 /* links should appear in records, but not in results list */
 .results-container .reportProblemLink {display: none;}
