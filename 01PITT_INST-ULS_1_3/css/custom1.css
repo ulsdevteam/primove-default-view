@@ -71,7 +71,7 @@ prm-topbar .top-nav-bar{background-color:#00205B;}
 prm-topbar {height: 70px; position: relative;}
 
 /*Search Bar*/
-prm-search-bar, prm-browse-search-bar, prm-search-bar .advanced-search-backdrop, prm-atoz-search-bar  {background-color:#003594;background-image:url(/discovery/custom/01PITT_INST-ULS_1_1/img/search_bg.png);}
+prm-search-bar, prm-browse-search-bar, prm-search-bar .advanced-search-backdrop, prm-atoz-search-bar  {background-color:#003594;background-image:url(../img/search_bg.png);}
 
 /*Search Text*/
 prm-search-bar .search-switch-buttons .md-button.switch-to-simple {color:#fff;}
@@ -215,20 +215,20 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
 
 .landingpagetitle h2{font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;font-size:18px;font-weight:400;}
 
-#uls{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/uls.jpg);
+#uls{background-image: url(../img/uls.jpg);
 	text-indent:-9999px;display:block;width:100%;height:150px;}
 
-#uls:hover{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/ulshover.jpg);}
+#uls:hover{background-image: url(../img/ulshover.jpg);}
 
-#barcoimg{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/barcolaw.jpg);
+#barcoimg{background-image: url(../img/barcolaw.jpg);
 	text-indent:-9999px;display:block;width:100%;height:150px;}
 
-#barcoimg:hover{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/barcohover.jpg);}
+#barcoimg:hover{background-image: url(../img/barcohover.jpg);}
 
-#hslsimg{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/hsls.jpg);
+#hslsimg{background-image: url(../img/hsls.jpg);
 	text-indent:-9999px;display:block;width:100%;height:150px;}
 
-#hslsimg:hover{background-image: url(/discovery/custom/01PITT_INST-ULS_1_1/img/hslshover.jpg);}
+#hslsimg:hover{background-image: url(../img/hslshover.jpg);}
 
 /*LibChat Widget*/
 .lcs_slide_out.lcs_slide_out-r {top:400px;}
@@ -248,3 +248,16 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
 @media only screen and (max-width: 660px){
 	#hslsimg, #uls, #barcoimg{background-size:auto;}}
 
+
+span.umnHathiTrustLink {
+  margin-left: -5px;
+}
+
+span.umnHathiTrustLink md-icon svg {
+  height: 1.2em;
+  filter: grayscale(100%);
+}
+
+span.umnHathiTrustLink:hover md-icon svg {
+  filter: grayscale(0%);
+}
