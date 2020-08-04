@@ -56,16 +56,16 @@ var pittJS = function pittJS() {
   function hathiAndReportAProblemLinks() {
     app.component('prmSearchResultAvailabilityLineAfter', {
       //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
-      template: '<hathi-trust-availability ignore-copyright="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
+      template: '<hathi-trust-availability hide-online="true" ignore-copyright="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
     });
   }
   function hideGetItWithHathi() {
 
-    if (!document.getElementsByClassName('umnHathiTrustLink')[0]) {
+    if (!document.getElementsByTagName('prm-request-services')[0]) {
       window.requestAnimationFrame(hideGetItWithHathi);
     } else {
       if (document.getElementsByClassName('umnHathiTrustLink').length) {
-
+        console.log('hathi loaded');
         document.getElementsByTagName('prm-request-services')[0].innerHTML = 'The full text of this item is available through Hathi Trust. See link above.';
       }
     }
@@ -103,7 +103,6 @@ var pittJS = function pittJS() {
 
 var pittJSInstance = pittJS();
 pittJSInstance.setupConstructor();
-
 angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'https://catalog.hathitrust.org/api/volumes/brief/json/').config(['$sceDelegateProvider', 'hathiTrustBaseUrl', function ($sceDelegateProvider, hathiTrustBaseUrl) {
   var urlWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
   urlWhitelist.push(hathiTrustBaseUrl + '**');
@@ -178,6 +177,11 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
       return;
     }
 
+    // prevent appearance/request if item is unavailable
+    if (self.ignoreCopyright && !isAvailable()) {
+      return;
+    }
+
     // look for full text at HathiTrust
     updateHathiTrustAvailability();
   };
@@ -185,6 +189,11 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
   var isJournal = function isJournal() {
     var format = self.prmSearchResultAvailabilityLine.result.pnx.addata.format[0];
     return !(format.toLowerCase().indexOf('journal') == -1); // format.includes("Journal")
+  };
+
+  var isAvailable = function isAvailable() {
+    var available = self.prmSearchResultAvailabilityLine.result.delivery.availability[0];
+    return (available.toLowerCase().indexOf('unavailable') == -1); 
   };
 
   var isOnline = function isOnline() {
