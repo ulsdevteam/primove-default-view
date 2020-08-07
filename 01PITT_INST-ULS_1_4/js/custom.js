@@ -211,7 +211,7 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
   };
 
   var isOclcNum = function isOclcNum(value) {
-    return value.match(/^(\(ocolc\))?\d+$/i);
+    return value.match(/^(\(ocolc\))\d+$/i);
   };
 
   var updateHathiTrustAvailability = function updateHathiTrustAvailability() {
