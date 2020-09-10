@@ -56,7 +56,7 @@ var pittJS = function pittJS() {
   function hathiAndReportAProblemLinks() {
     app.component('prmSearchResultAvailabilityLineAfter', {
       //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
-      template: '<hathi-trust-availability hide-online="true" ignore-copyright="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
+      template: '<hathi-trust-availability hide-online="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
     });
   }
   function hideGetItWithHathi() {
@@ -79,7 +79,7 @@ var pittJS = function pittJS() {
   }
 
   function privateSetup() {
-    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability']);
+    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability','getTempAddress']);
     console.log("Executing custom JS.");
 
     angular.element(function () {
@@ -88,7 +88,7 @@ var pittJS = function pittJS() {
       hathiAndReportAProblemLinks();
       chatWidget();
       newSearchSameTab();
-      hideGetItWithHathi();
+      //hideGetItWithHathi();
     });
 
     return;
@@ -265,4 +265,57 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
                 </a>\
               </span>'
 });
+
+
+angular.module('getTempAddress', []).controller('prmRequestAfterController',function($scope){
+
+  //watch for the user to select a pickup location in the hold-request form
+  $scope.$watch(angular.bind($scope.$parent.$$childTail.requestForm, function () {
+  if (typeof $scope.$parent.$$childTail.requestForm !== 'undefined' && typeof $scope.$parent.$$childTail.requestForm[".pickupLocation"] !== 'undefined' && typeof $scope.$parent.$$childTail.requestForm[".pickupLocation"].$modelValue !== 'undefined'){
+      return $scope.$parent.$$childTail.requestForm[".pickupLocation"].$modelValue;
+   }
+  }), function (newVal) {
+    //fix unecessary gap in instructions area:
+    angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].style.marginTop='-25px';
+    console.log($scope.$parent.$$childTail.requestForm);
+    //if they choose 'Ship it'...
+    if(newVal.includes('$$USER_HOME_ADDRESS')){
+      
+      //hide the request form temporarily while we prompt them for a shipping address using a form generated in a sibling element.  template for that is defined in the prmRequestAfter component below.
+      //angular.element(document.querySelector('prm-request'))[0].children[1].style.display='none';
+      //we can't do a dialog, so why not draw attention to the new form by giving it a background color?  could try partial transparency to make it a little less bold
+      //angular.element(document.getElementsByTagName('prm-request-after'))[0].style.backgroundColor='pink';
+      //set this custom property that we've bound to the view
+      //$scope.shipit=true;
+      
+      //display home delivery instructions:
+      angular.element(document.querySelector('#noContactRequestInstructions'))[0].style.display='none';
+      angular.element(document.querySelector('#shipItRequestInstructions'))[0].style.display='block';
+      //fix unecessary gap in instructions area:
+      //angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].style.marginTop='-35px';
+      //trying to set a 4-sided border for the comment field conflicts with the insufficient border set by ExL
+      //so highlight it in grey instead?..
+      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.backgroundColor='lightgrey';
+      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.opacity= "0.5";
+
+    }
+        if (newVal.includes('$$USER_HOME_ADDRESS')==false && $scope.$parent.$$childTail.requestForm.$dirty==true){
+          //display no contact pickup instructions:
+          angular.element(document.querySelector('#shipItRequestInstructions'))[0].style.display='none';
+          angular.element(document.querySelector('#noContactRequestInstructions'))[0].style.display='block';
+          //fix unecessary gap in instructions area:
+          //angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].style.marginTop='-35px';
+          //trying to set a 4-sided border for the comment field conflicts with the insufficient border set by ExL
+          //so highlight it in grey instead?..
+          angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.backgroundColor='lightgrey';
+          angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.opacity= "0.5";
+          //$scope.shipit=false;
+        }       
+  });
+}).component('prmRequestAfter',{
+  controller:'prmRequestAfterController',
+  //ng-if value determines whether or not this displays
+  template: '<form ng-if="shipit" action=""><label for="tempaddress">Delivery address:</label><br><textarea id="tempaddress" name="tempaddress" rows="4" cols="50">Used once, just for this transaction.  This does not change your official Pitt address.</textarea><br>     <input type="submit" value="Submit"></form>'
+});
+
 })();
