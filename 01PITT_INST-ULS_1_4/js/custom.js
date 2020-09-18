@@ -79,7 +79,7 @@ var pittJS = function pittJS() {
   }
 
   function privateSetup() {
-    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability','getTempAddress']);
+    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability','getTempAddress','payFines','externalRequest']);
     console.log("Executing custom JS.");
 
     angular.element(function () {
@@ -308,4 +308,61 @@ angular.module('getTempAddress', []).controller('prmRequestAfterController',func
 }).component('prmRequestAfter',{
   controller:'prmRequestAfterController'
 });
+/*display custom external request options when the item is unavailable*/
+/* white list the url
+.constant('externalRequestHandlerURL', 'https://requests.libraries.pitt.edu/').config(['$sceDelegateProvider', 'externalRequestHandlerURL', function ($sceDelegateProvider, externalRequestHandlerURL) {
+  var urlWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
+  urlWhitelist.push(externalRequestHandlerURL + '**');
+  $sceDelegateProvider.resourceUrlWhitelist(urlWhitelist);
+}])
+*/
+
+angular.module('externalRequest', []).config(function ($httpProvider) {
+  $httpProvider.defaults.withCredentials = true;
+  $httpProvider.defaults.useXDomain = true;
+}).controller('prmRequestServicesAfterController',function($scope,$http,$cookies){
+  //wait for attached controllers to load
+  this.$onInit = function () {
+    //some stuff from the hathi module for picking out the oclc number
+    var isOclcNum = function isOclcNum(value) {
+      return value.match(/^(\(ocolc\))\d+$/i);
+    };
+    //if the item is unavailable and the user is logged in, display the request workflow interface
+    if (this.itemInfo.item.delivery.availability[0]=='unavailable' && $scope.$parent.$ctrl.requestService._reqAlert._htmlMsg==""){
+      //pluck the oclcid out of the oclcid field even though it is polluted with other items
+      //consider that there may be more than one?
+      var oclcid= this.itemInfo.item.pnx.addata.oclcid.filter(isOclcNum).map(function (id) {
+        return(id.toLowerCase().replace('(ocolc)', ''))});
+
+        console.log(oclcid[0]);
+        console.log($cookies.getAll());
+        //AJAX out to EZBorrow API script to check availability there
+        $http({
+          method : "GET",
+          withCredentials:true,
+          url : "https://dev-requests.libraries.pitt.edu/",
+        }).then(function mySuccess(response) {
+          //should return info about whether or not the oclc number matches an available resource in PALCI
+          $scope.myWelcome = response.data;
+        }, function myError(response) {
+          $scope.myWelcome = response.statusText;
+        });
+      $scope.unavailable=true;
+    }
+  }
+}).component('prmRequestServicesAfter',{
+  controller:'prmRequestServicesAfterController',
+  require:{itemInfo: '^?prmFullViewServiceContainer'},
+  //ng-if value determines whether or not this displays
+  template: '<div ng-if="unavailable"><a ng-click="doJSONPRequest()">Request this item</a><p>Status Code: {{myWelcome}}</p></div><iframe src="https://dev-requests.libraries.pitt.edu"></iframe>'
+});
+
+//View fines overview controller
+angular.module('payFines', []).controller('prmFinesOverviewAfterController',function($scope){
+  console.log($scope.$parent.$ctrl);
+}).component('prmFinesOverviewAfter',{
+controller:'prmFinesOverviewAfterController',
+template: '<div>Pay my fines</div>'
+});
+
 })();
