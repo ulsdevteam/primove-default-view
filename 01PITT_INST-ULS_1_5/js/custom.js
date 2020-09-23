@@ -103,6 +103,7 @@ var pittJS = function pittJS() {
 
 var pittJSInstance = pittJS();
 pittJSInstance.setupConstructor();
+
 angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'https://catalog.hathitrust.org/api/volumes/brief/json/').config(['$sceDelegateProvider', 'hathiTrustBaseUrl', function ($sceDelegateProvider, hathiTrustBaseUrl) {
   var urlWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
   urlWhitelist.push(hathiTrustBaseUrl + '**');
@@ -266,3 +267,11 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
               </span>'
 });
 })();
+
+//third iron integration
+angular.module('thirdIron', []).controller('prmSearchResultAvailabilityLineAfterController', function($scope) {
+  window.browzine.primo.searchResult($scope);
+}).component('prmSearchResultAvailabilityLineAfter', {
+  bindings: { parentCtrl: '<' },
+  controller: 'prmSearchResultAvailabilityLineAfterController'
+});
