@@ -56,7 +56,7 @@ var pittJS = function pittJS() {
   function hathiAndReportAProblemLinks() {
     app.component('prmSearchResultAvailabilityLineAfter', {
       //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
-      template: '<hathi-trust-availability hide-online="true" ignore-copyright="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
+      template: '<hathi-trust-availability hide-online="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
     });
   }
   function hideGetItWithHathi() {
@@ -79,7 +79,7 @@ var pittJS = function pittJS() {
   }
 
   function privateSetup() {
-    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability']);
+    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'modGesLink']);
     console.log("Executing custom JS.");
 
     angular.element(function () {
@@ -88,7 +88,7 @@ var pittJS = function pittJS() {
       hathiAndReportAProblemLinks();
       chatWidget();
       newSearchSameTab();
-      hideGetItWithHathi();
+      //hideGetItWithHathi();
     });
 
     return;
@@ -265,4 +265,40 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
                 </a>\
               </span>'
 });
+
+
+//Change GES links
+angular.module('modGesLink', []).controller('prmServiceButtonAfterController',['$location','$scope', function($location, $scope){
+  this.$onInit = function () {
+    if ($location.search().recall === 'true' && $scope.$parent.$ctrl.service.type == 'AlmaRequest'){
+      $scope.$parent.$ctrl.getServiceDetails();
+      angular.element(document.getElementsByTagName('prm-request'))[0].children[0].children[0].innerHTML='Recall this item';
+      angular.element(document.getElementsByTagName('prm-request'))[0].children[0].children[0].style.backgroundColor='lightpink';
+    }
+}
+  //add record unique id and recall info to request link
+  //the links are stored in service objects dynamically added to the parent controller one at a time
+  $scope.$watch(angular.bind($scope.$parent.$ctrl, function () {
+    //only alter external physical request link
+    if (typeof $scope.$parent.$ctrl.service !== 'undefined' && $scope.$parent.$ctrl.service.type == 'Request this item (ILL)'){
+        //result becomes newVal  
+        return $scope.$parent.$ctrl.service['link-to-service'];        
+      }
+      //every time the parent controller updates:
+    }), function (newVal,recallable) {
+      //only if we haven't already done it on a prior run
+      if (typeof newVal !== 'undefined' && !newVal.includes('&referrer=')){
+        var recall = '';
+        if (angular.element(document.querySelector('span[translate="AlmaRequest"]')).length>0){
+          recall = '&recall=true';
+        }
+        $scope.$parent.$ctrl.service['link-to-service']=newVal+'&referrer='+$location.search().docid+recall;
+        //display the link destination. heaven forbid!  
+      console.log($scope.$parent.$ctrl.service['link-to-service']);
+      }
+    });
+}]).component('prmServiceButtonAfter',{
+controller:'prmServiceButtonAfterController'
+});
+
 })();
