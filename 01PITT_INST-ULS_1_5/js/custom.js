@@ -56,9 +56,55 @@ var pittJS = function pittJS() {
   function hathiAndReportAProblemLinks() {
     app.component('prmSearchResultAvailabilityLineAfter', {
       //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
-      template: '<hathi-trust-availability hide-online="true" ignore-copyright="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
+      template: '<hathi-trust-availability hide-online="true" ignore-copyright="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><report-problem-link class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></report-problem-link><br><third-iron avail-line="$ctrl.$parent"></third-iron>'
     });
   }
+
+  function thirdIron() {
+    window.browzine = {
+      api: "https://public-api.thirdiron.com/public/v1/libraries/154",
+      apiKey: "your api key here",
+   
+      journalCoverImagesEnabled: true,
+   
+      journalBrowZineWebLinkTextEnabled: true,
+      journalBrowZineWebLinkText: "View Journal Contents",
+   
+      articleBrowZineWebLinkTextEnabled: true,
+      articleBrowZineWebLinkText: "View Issue Contents",
+   
+      articlePDFDownloadLinkEnabled: true,
+      articlePDFDownloadLinkText: "Download PDF",
+   
+      articleLinkEnabled: true,
+      articleLinkText: "Read Article",
+   
+      printRecordsIntegrationEnabled: true,
+   
+      unpaywallEmailAddressKey: "email@pitt.edu",
+   
+      articlePDFDownloadViaUnpaywallEnabled: true,
+      articlePDFDownloadViaUnpaywallText: "Download PDF (via Unpaywall)",
+   
+      articleLinkViaUnpaywallEnabled: true,
+      articleLinkViaUnpaywallText: "Read Article (via Unpaywall)",
+   
+      articleAcceptedManuscriptPDFViaUnpaywallEnabled: true,
+      articleAcceptedManuscriptPDFViaUnpaywallText: "Download PDF (Accepted Manuscript via Unpaywall)",
+   
+      articleAcceptedManuscriptArticleLinkViaUnpaywallEnabled: true,
+      articleAcceptedManuscriptArticleLinkViaUnpaywallText: "Read Article (Accepted Manuscript via Unpaywall)",
+    };
+   
+    browzine.script = document.createElement("script");
+    browzine.script.src = "https://s3.amazonaws.com/browzine-adapters/primo/browzine-primo-adapter.js";
+    document.head.appendChild(browzine.script);
+   
+    
+};
+   
+ 
+
   function hideGetItWithHathi() {
 
     if (!document.getElementsByTagName('prm-request-services')[0]) {
@@ -79,16 +125,16 @@ var pittJS = function pittJS() {
   }
 
   function privateSetup() {
-    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability']);
+    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'thirdIron']);
     console.log("Executing custom JS.");
 
     angular.element(function () {
       console.log('page loading completed');
       addGoogleAnalytics();
-      hathiAndReportAProblemLinks();
+      //hathiAndReportAProblemLinks();
       chatWidget();
       newSearchSameTab();
-      hideGetItWithHathi();
+      thirdIron();
     });
 
     return;
@@ -103,7 +149,6 @@ var pittJS = function pittJS() {
 
 var pittJSInstance = pittJS();
 pittJSInstance.setupConstructor();
-
 angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'https://catalog.hathitrust.org/api/volumes/brief/json/').config(['$sceDelegateProvider', 'hathiTrustBaseUrl', function ($sceDelegateProvider, hathiTrustBaseUrl) {
   var urlWhitelist = $sceDelegateProvider.resourceUrlWhitelist();
   urlWhitelist.push(hathiTrustBaseUrl + '**');
@@ -266,12 +311,21 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
                 </a>\
               </span>'
 });
-})();
 
 //third iron integration
+//how to not monopolize the controller for the built in prmSearchResultAvailabilityLineAfter directive and still access the scope needed?
 angular.module('thirdIron', []).controller('prmSearchResultAvailabilityLineAfterController', function($scope) {
-  window.browzine.primo.searchResult($scope);
-}).component('prmSearchResultAvailabilityLineAfter', {
-  bindings: { parentCtrl: '<' },
-  controller: 'prmSearchResultAvailabilityLineAfterController'
-});
+  
+      this.$onInit = function () {
+      window.browzine.primo.searchResult($scope);
+      }
+    }).component('prmSearchResultAvailabilityLineAfter', {
+
+      bindings: { parentCtrl: '<' },
+      controller: 'prmSearchResultAvailabilityLineAfterController',
+    
+    });
+
+
+  
+})();
