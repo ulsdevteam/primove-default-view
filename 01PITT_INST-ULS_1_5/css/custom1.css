@@ -231,10 +231,13 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
 #hslsimg:hover{background-image: url(../img/hslshover.jpg);}
 
 /*LibChat Widget*/
-.lcs_slide_out.lcs_slide_out-r {top:400px;}
+.lcs_slide_out.lcs_slide_out-r {top:40px;}
 .lcs_slide_out-r header a:focus, .lcs_slide_out-r header a:hover {box-shadow:inset 0 0 0 0;}
 .lcs_slide_out-r header a:hover {filter: drop-shadow(2px 2px 2px gray);}
-
+@media (min-height: 450px) {
+	.lcs_slide_out.lcs_slide_out-r {top: 30vh;} }
+@media (min-height: 750px) { 
+	.lcs_slide_out.lcs_slide_out-r {top: 50vh;} }
 
 /*============= Report a Problem Link ===============*/
 /* links should appear in records, but not in results list */
