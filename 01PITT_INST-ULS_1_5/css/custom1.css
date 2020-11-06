@@ -264,3 +264,6 @@ span.umnHathiTrustLink md-icon svg {
 span.umnHathiTrustLink:hover md-icon svg {
   filter: grayscale(0%);
 }
+
+/*make lengthy custom comment field label for hold-request form not overlap nearby elements*/
+md-input-container label[translate="almaRequest.comment"]{position:relative;} 

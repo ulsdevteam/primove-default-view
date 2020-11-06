@@ -56,7 +56,7 @@ var pittJS = function pittJS() {
   function hathiAndReportAProblemLinks() {
     app.component('prmSearchResultAvailabilityLineAfter', {
       //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
-      template: '<hathi-trust-availability hide-online="true" ignore-copyright="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
+      template: '<hathi-trust-availability hide-online="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
     });
   }
   function hideGetItWithHathi() {
@@ -88,7 +88,7 @@ var pittJS = function pittJS() {
       hathiAndReportAProblemLinks();
       chatWidget();
       newSearchSameTab();
-      hideGetItWithHathi();
+      //hideGetItWithHathi();
     });
 
     return;
