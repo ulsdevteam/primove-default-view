@@ -79,7 +79,7 @@ var pittJS = function pittJS() {
   }
 
   function privateSetup() {
-    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability','getTempAddress']);
+    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability','getTempAddress','smsNotifications']);
     console.log("Executing custom JS.");
 
     angular.element(function () {
@@ -308,4 +308,31 @@ angular.module('getTempAddress', []).controller('prmRequestAfterController',func
 }).component('prmRequestAfter',{
   controller:'prmRequestAfterController'
 });
+
+//SMS Notifications User Preferences Interface
+angular.module('smsNotifications', []).controller('prmPersonalInfoAfterController',function($rootScope,$scope,$http){
+  //jwt is stored with double quotes?
+  var jwt=$rootScope.$$childTail.$ctrl.storageutil.sessionStorage.primoExploreJwt.slice(1, -1);
+  $http({
+     method : "GET",
+     //withCredentials:true,
+     url : "https://dev-patron.libraries.pitt.edu/address/sms/?jwt="+jwt,
+   }).then(function mySuccess(response) {
+     //API responds with null if user has no SMS notification preference set
+     if (response.data == null){
+      $scope.isSmsSet = 'Do not notify me by SMS';
+     }
+     else{
+      $scope.isSmsSet='Subscribed to SMS Notifications';
+     }
+   }, function myError(response) {
+     $scope.status = 'Error: Failed to determine SMS notification preferences';
+   });
+   //$scope.status = 'Request failed';
+ }).component('prmPersonalInfoAfter', {
+    controller:'prmPersonalInfoAfterController',
+   //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
+    template: 'Text notifications: {{isSmsSet}}'
+ });
+
 })();
