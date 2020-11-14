@@ -309,30 +309,88 @@ angular.module('getTempAddress', []).controller('prmRequestAfterController',func
   controller:'prmRequestAfterController'
 });
 
+
 //SMS Notifications User Preferences Interface
-angular.module('smsNotifications', []).controller('prmPersonalInfoAfterController',function($rootScope,$scope,$http){
-  //jwt is stored with double quotes?
-  var jwt=$rootScope.$$childTail.$ctrl.storageutil.sessionStorage.primoExploreJwt.slice(1, -1);
-  $http({
-     method : "GET",
-     //withCredentials:true,
-     url : "https://dev-patron.libraries.pitt.edu/address/sms/?jwt="+jwt,
-   }).then(function mySuccess(response) {
-     //API responds with null if user has no SMS notification preference set
-     if (response.data == null){
-      $scope.isSmsSet = 'Do not notify me by SMS';
+angular.module('smsNotifications', []).controller('prmPersonalInfoAfterController',function($scope,$http){
+  this.$onInit = function () {
+    console.log(this.primoExplore);
+    $scope.smsNumber='';
+    //jwt is stored with double quotes?
+    var jwt=this.primoExplore.storageutil.sessionStorage.primoExploreJwt.slice(1, -1);
+
+//SMS STATUS
+    $http({
+      method : "GET",
+      //withCredentials:true,
+      url : "https://dev-patron.libraries.pitt.edu/address/sms/?jwt="+jwt,
+    }).then(function mySuccess(response) {
+      //API responds with null if user has no SMS notification preference set
+      if (response.data == null){
+      $scope.isSmsSet = 'Not recieving notifications by SMS';
+      
+      $scope.smsNumber='';
+      $scope.smsStatus = false;
      }
      else{
       $scope.isSmsSet='Subscribed to SMS Notifications';
+      $scope.smsNumber = response.data;
+      $scope.smsStatus = true;
      }
+     console.log($scope);
    }, function myError(response) {
      $scope.status = 'Error: Failed to determine SMS notification preferences';
    });
+
+//SUBSCRIBE
+$scope.subscribe = function(){
+  $scope.waitingForResponse=true;
+  $http.put('https://dev-patron.libraries.pitt.edu/address/sms/?jwt='+jwt+'&sms='+this.smsNumber)
+    .then(function mySuccess(response) {
+    $scope.waitingForResponse=false;
+    //API responds with null if user has no SMS notification preference set
+    $scope.isSmsSet = 'SMS is ON';
+    $scope.smsStatus = true;
+
+ }, function myError(response) {
+   $scope.status = 'Error: Failed to set SMS notification preferences';
+ });
+}
+
+//UNSUBSCRIBE
+$scope.unsubscribe = function(){
+  $scope.waitingForResponse=true;
+  $http.delete('https://dev-patron.libraries.pitt.edu/address/sms/?jwt='+jwt)
+   .then(function mySuccess(response) {
+    $scope.waitingForResponse=false;
+   //API responds with null if user has no SMS notification preference set
+   $scope.isSmsSet = 'SMS is OFF';
+   $scope.smsStatus = false;
+
+}, function myError(response) {
+  $scope.status = 'Error: Failed to set SMS notification preferences';
+});
+}
+
+  }
    //$scope.status = 'Request failed';
  }).component('prmPersonalInfoAfter', {
+  require: {
+    primoExplore: '^primoExplore'
+  },
     controller:'prmPersonalInfoAfterController',
    //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
-    template: 'Text notifications: {{isSmsSet}}'
- });
+    template: '\
+    <p ng-show="waitingForResponse">Processing your request</p>\
+    <p ng-show="!smsStatus && !waitingForResponse"><strong>SMS notifications disabled</strong></p>\
+    <p ng-show="smsStatus && !waitingForResponse"><strong>SMS notifications enabled</strong></p>\
+    <form ng-hide="smsStatus" ng-submit="subscribe()">\
+      <label for="optIn">Enter a phone number to opt-in: </label>\
+        <input name="optIn" type="text" ng-model="smsNumber"><br>\
+        <input type="submit" id="smsSubscribeSubmit" value="Subscribe">\
+    </form>\
+    <form ng-show="smsStatus" ng-submit="unsubscribe()">\
+      <input type="submit" id="smsDeleteSubmit" value="Unsubscribe">\
+    </form>'
+   });
 
 })();
