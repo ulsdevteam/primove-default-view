@@ -59,6 +59,14 @@ var pittJS = function pittJS() {
       template: '<hathi-trust-availability hide-online="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
     });
   }
+
+  function smsNotificationsDirective() {
+    app.component('prmPersonalInfoAfter', {
+      //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
+      template: '<sms-notifications></sms-notifications>'
+    });
+  }
+
   function hideGetItWithHathi() {
 
     if (!document.getElementsByTagName('prm-request-services')[0]) {
@@ -89,6 +97,7 @@ var pittJS = function pittJS() {
       chatWidget();
       newSearchSameTab();
       //hideGetItWithHathi();
+      smsNotificationsDirective();
     });
 
     return;
@@ -311,7 +320,7 @@ angular.module('getTempAddress', []).controller('prmRequestAfterController',func
 
 
 //SMS Notifications User Preferences Interface
-angular.module('smsNotifications', []).controller('prmPersonalInfoAfterController',function($scope,$http){
+angular.module('smsNotifications', []).controller('smsNotificationsController',function($scope,$http){
   this.$onInit = function () {
     console.log(this.primoExplore);
     $scope.smsNumber='';
@@ -373,11 +382,11 @@ $scope.unsubscribe = function(){
 
   }
    //$scope.status = 'Request failed';
- }).component('prmPersonalInfoAfter', {
+ }).component('smsNotifications', {
   require: {
     primoExplore: '^primoExplore'
   },
-    controller:'prmPersonalInfoAfterController',
+    controller:'smsNotificationsController',
    //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
     template: '\
     <p ng-show="waitingForResponse">Processing your request</p>\
