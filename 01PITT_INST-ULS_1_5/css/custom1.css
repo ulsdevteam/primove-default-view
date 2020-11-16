@@ -291,3 +291,16 @@ md-input-container label[translate="almaRequest.comment"]{position:relative;}
 
 #noContactRequestInstructions{display:none; background-color:pink; padding:5px;}
 #shipItRequestInstructions{display:none; background-color:pink; padding:5px;}
+
+/* SMS Notifications Preferences */
+.pink{animation: flash 2s forwards linear normal;}
+
+@keyframes flash {
+	0% {
+	  background:pink;
+	}
+
+	100% {
+	  background:white;
+	}
+  }
