@@ -56,7 +56,9 @@ var pittJS = function pittJS() {
   function hathiAndReportAProblemLinks() {
     app.component('prmSearchResultAvailabilityLineAfter', {
       //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
-      template: '<hathi-trust-availability hide-online="true" ignore-copyright="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><report-problem-link class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></report-problem-link><br><third-iron avail-line="$ctrl.$parent"></third-iron>'
+	  template: '<hathi-trust-availability hide-online="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability>\
+	  <br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>\
+	  <third-iron></third-iron>'
     });
   }
 
@@ -131,7 +133,7 @@ var pittJS = function pittJS() {
     angular.element(function () {
       console.log('page loading completed');
       addGoogleAnalytics();
-      //hathiAndReportAProblemLinks();
+      hathiAndReportAProblemLinks();
       chatWidget();
       newSearchSameTab();
       thirdIron();
@@ -313,19 +315,25 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
 });
 
 //third iron integration
-//how to not monopolize the controller for the built in prmSearchResultAvailabilityLineAfter directive and still access the scope needed?
-angular.module('thirdIron', []).controller('prmSearchResultAvailabilityLineAfterController', function($scope) {
-  
-      this.$onInit = function () {
-      window.browzine.primo.searchResult($scope);
-      }
-    }).component('prmSearchResultAvailabilityLineAfter', {
+angular.module('thirdIron', []).controller('thirdIronController', function($scope) {
+	this.$onInit = function () {
+		//simulate browzine-primo-adapter.js expected path to prmSearchResultAvailabilityLine 
+		//it expects that we bind to this scope through the parentCtrl property on the prmSearchResultAvailabilityLineAfter directive
+		//we don't want to alter that directive's controller since it would conflict with Hathi Trust module's use of it
+		//so require what we want directly and pretend we're getting to it through the original means 
+		$scope.$ctrl.parentCtrl = this.prmSearchResultAvailabilityLine;
+		window.browzine.primo.searchResult($scope);
+			//The browzine adapter's expected access:
+			/*  
+			function getScope($scope) {
+				return $scope && $scope.$ctrl && $scope.$ctrl.parentCtrl ? $scope.$ctrl.parentCtrl : undefined;
+			};
+			*/
+	}
+	}).component('thirdIron', {
+		//Access grandparent scope
+		require: {prmSearchResultAvailabilityLine:'^prmSearchResultAvailabilityLine'},
+		controller: 'thirdIronController',
+  });
 
-      bindings: { parentCtrl: '<' },
-      controller: 'prmSearchResultAvailabilityLineAfterController',
-    
-    });
-
-
-  
 })();
