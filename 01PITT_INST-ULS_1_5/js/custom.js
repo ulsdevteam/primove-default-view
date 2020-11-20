@@ -53,12 +53,12 @@ var pittJS = function pittJS() {
    * Adds Hathi Trust availablity links where applicable
    * Adds a link to our help page in each full record 
    */
-  function hathiAndReportAProblemLinks() {
+  function prmSearchResultAvailabilityLineAfterTemplate() {
     app.component('prmSearchResultAvailabilityLineAfter', {
       //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
 	  template: '<hathi-trust-availability hide-online="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability>\
-	  <br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>\
 	  <third-iron></third-iron>'
+	  // Note: Report a Problem links are generated in the thirdIron module to work around their layout requirements
     });
   }
 
@@ -133,7 +133,7 @@ var pittJS = function pittJS() {
     angular.element(function () {
       console.log('page loading completed');
       addGoogleAnalytics();
-      hathiAndReportAProblemLinks();
+      prmSearchResultAvailabilityLineAfterTemplate();
       chatWidget();
       newSearchSameTab();
       thirdIron();
@@ -323,12 +323,28 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 		//so require what we want directly and pretend we're getting to it through the original means 
 		$scope.$ctrl.parentCtrl = this.prmSearchResultAvailabilityLine;
 		window.browzine.primo.searchResult($scope);
+
 			//The browzine adapter's expected access:
 			/*  
 			function getScope($scope) {
 				return $scope && $scope.$ctrl && $scope.$ctrl.parentCtrl ? $scope.$ctrl.parentCtrl : undefined;
 			};
 			*/
+
+			//why do the contents links show up outside the 'after' directive?
+			/* browzine-primo-adapter.js ~672
+				querySelector("prm-search-result-availability-line
+				.insertAdjacentHTML()
+			*/
+
+	//Ensure 'Report a Problem' link shows up after the Browzine content injected outside the prmSearchResultAvailabilityLineAfter section
+		var span = document.createElement("span");
+		var reportProblem = document.createElement('a');
+		reportProblem.href='https://library.pitt.edu/ask-email?referringUrl=' + window.location.href;
+		reportProblem.innerText='Report a Problem';
+		span.classList.add('reportProblemLink');
+		span.appendChild(reportProblem);
+		angular.element(document.getElementsByTagName('prm-search-result-availability-line'))[0].after(span);
 	}
 	}).component('thirdIron', {
 		//Access grandparent scope
