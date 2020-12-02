@@ -345,7 +345,7 @@ angular.module('smsNotifications', []).controller('smsNotificationsController',f
 		//SHOW CURRENT SMS STATUS
 		$http({
 			method : "GET",
-			url : "https://dev-patron.libraries.pitt.edu/address/sms/?jwt="+jwt,
+			url : 'https://'+( window.location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-')+'patron.libraries.pitt.edu/address/sms/?jwt='+jwt,
 			}).then(function mySuccess(response) {
 				//API responds with null if user has no SMS notification preference set
 				if (response.data == null){
@@ -372,7 +372,7 @@ angular.module('smsNotifications', []).controller('smsNotificationsController',f
 					else 
 						wait.innerHTML += ".";
 					}, 300)
-				$http.put('https://dev-patron.libraries.pitt.edu/address/sms/?jwt='+jwt+'&sms='+this.smsNumber)
+				$http.put('https://'+( window.location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-')+'patron.libraries.pitt.edu/address/sms/?jwt='+jwt+'&sms='+this.smsNumber)
 					.then(function mySuccess(response) {
 						clearInterval(dots);
 						document.getElementById("wait").innerHTML = "";
@@ -401,7 +401,7 @@ angular.module('smsNotifications', []).controller('smsNotificationsController',f
 				else 
 					wait.innerHTML += ".";
 				}, 300)
-			$http.delete('https://dev-patron.libraries.pitt.edu/address/sms/?jwt='+jwt)
+			$http.delete('https://'+( window.location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-')+'patron.libraries.pitt.edu/address/sms/?jwt='+jwt)
 				.then(function mySuccess(response) {
 					clearInterval(dots);
 					document.getElementById("wait").innerHTML = "";
