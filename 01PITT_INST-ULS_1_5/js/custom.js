@@ -321,85 +321,118 @@ angular.module('getTempAddress', []).controller('prmRequestAfterController',func
 
 //SMS Notifications User Preferences Interface
 angular.module('smsNotifications', []).controller('smsNotificationsController',function($scope,$http){
+	function dots() {dots = window.setInterval(function() {
+		var wait = document.getElementById("wait");
+		if ( wait.innerHTML.length > 3 ) 
+			wait.innerHTML = "";
+		else 
+			wait.innerHTML += ".";
+		}, 300)};
+	function clearDots(){
+		clearInterval(dots);
+		document.getElementById("wait").innerHTML = "";
+	}
 	this.$onInit = function () {
 		$scope.smsNumber='';
-		//jwt is stored with double quotes?
-		var jwt=this.primoExplore.storageutil.sessionStorage.primoExploreJwt.slice(1, -1);
+		//jwt is stored with quotes
+		var jwt=this.primoExplore.storageutil.sessionStorage.primoExploreJwt;
+		var n = jwt.length;
+		if ((jwt.charAt(0)=='"')&&(jwt.charAt(n-1)=='"')){
+			jwt = jwt.slice(1, -1);
+		}
 
-		//SMS STATUS
+		console.log(this.primoExplore.storageutil.sessionStorage.primoExploreJwt);
+		//SHOW CURRENT SMS STATUS
 		$http({
 			method : "GET",
 			url : "https://dev-patron.libraries.pitt.edu/address/sms/?jwt="+jwt,
 			}).then(function mySuccess(response) {
 				//API responds with null if user has no SMS notification preference set
 				if (response.data == null){
-					$scope.isSmsSet = 'Not recieving notifications by SMS';  
-					$scope.smsNumber='';
-					$scope.smsStatus = false;
+					$scope.status = 'Not recieving notifications by SMS';  
+					$scope.subscribed=false;
      			}
 				else{
-					$scope.isSmsSet='Subscribed to SMS Notifications';
+					$scope.subscribed=true;
 					$scope.smsNumber = response.data;
-					$scope.smsStatus = true;
+					$scope.status = 'SMS notifications enabled for ' + $scope.smsNumber;
 				}
 			}, function myError(response) {
 				$scope.status = 'Error: Failed to determine SMS notification preferences';
-		});
+		}); 
 
 		//SUBSCRIBE
 		$scope.subscribe = function(){
-			if(this.smsNumber.match(/^[2-9]\d{2}-\d{3}-\d{4}$/) !== null){
-				$scope.waitingForResponse=true;
+			if(this.smsNumber.match('[1-9]{3}-[0-9]{3}-[0-9]{4}')){
+				$scope.status='Waiting for Response';
+				dots = window.setInterval(function() {
+					var wait = document.getElementById("wait");
+					if ( wait.innerHTML.length > 3 ) 
+						wait.innerHTML = "";
+					else 
+						wait.innerHTML += ".";
+					}, 300)
 				$http.put('https://dev-patron.libraries.pitt.edu/address/sms/?jwt='+jwt+'&sms='+this.smsNumber)
 					.then(function mySuccess(response) {
-						$scope.smsError = false;
-						$scope.waitingForResponse=false;
-						$scope.isSmsSet = 'SMS is ON';
-						$scope.smsStatus = true;
+						clearInterval(dots);
+						document.getElementById("wait").innerHTML = "";
+						$scope.subscribed=true;
+						$scope.status='SMS notifications enabled for ' + $scope.smsNumber;
  					}, function myError(response) {
-						$scope.waitingForResponse=false;
+						clearInterval(dots);
+						document.getElementById("wait").innerHTML = "";
+						$scope.status='Error: Failed to set SMS notification preferences';
   						$scope.smsError = true;
- 					});
+					 });
 			}
 			else {
-				$scope.validationMessage = "Please use XXX-XXX-XXXX format";
-				$scope.validationColor = "pink";
+				$scope.invalid=true;
 			}
+
 		}
 
 		//UNSUBSCRIBE
 		$scope.unsubscribe = function(){
-			$scope.waitingForResponse=true;
+			$scope.status='Waiting for Response';
+			dots = window.setInterval(function() {
+				var wait = document.getElementById("wait");
+				if ( wait.innerHTML.length > 3 ) 
+					wait.innerHTML = "";
+				else 
+					wait.innerHTML += ".";
+				}, 300)
 			$http.delete('https://dev-patron.libraries.pitt.edu/address/sms/?jwt='+jwt)
 				.then(function mySuccess(response) {
-					$scope.smsError = false;
-					$scope.waitingForResponse=false;
-					$scope.isSmsSet = 'SMS is OFF';
-					$scope.smsStatus = false;
+					clearInterval(dots);
+					document.getElementById("wait").innerHTML = "";
+					$scope.status='SMS notifications disabled';
+					$scope.subscribed=false;
+					$scope.invalid=false;
 				}, function myError(response) {
-					$scope.waitingForResponse=false;
-					$scope.smsError = true;
+					clearInterval(dots);
+					document.getElementById("wait").innerHTML = "";
+					$scope.status='Error: Failed to set SMS notification preferences';
 			});
 		}
 	}
  }).component('smsNotifications', {
 	require: {
+		//needed to get the JWT
 		primoExplore: '^primoExplore'
 	},
 	controller:'smsNotificationsController',
 	template: '\
-	<p ng-show="waitingForResponse">Processing your request</p>\
-	<p ng-show="!smsStatus && !waitingForResponse && !smsError"><strong>SMS notifications disabled</strong></p>\
-	<p ng-show="smsStatus && !waitingForResponse && !smsError"><strong>SMS notifications enabled</strong></p>\
-	<p ng-show="smsError && !waitingForResponse"><strong>Error: Failed to set SMS notification preferences</strong></p>\
-	<form ng-hide="smsStatus" ng-submit="subscribe()">\
-		<label for="optIn">Enter a phone number to opt-in: </label>\
-		<input name="optIn" type="text" ng-model="smsNumber" class="{{validationColor}}"><span><strong> {{validationMessage}}</strong></span><br>\
-		<input type="submit" id="smsSubscribeSubmit" value="Subscribe">\
-	</form>\
-	<form ng-show="smsStatus" ng-submit="unsubscribe()">\
-		<input type="submit" id="smsDeleteSubmit" value="Unsubscribe">\
-	</form>'
+		<span>{{status}}</span><span id="wait"></span>\
+		<form class="smsNotificationsForm" ng-hide="subscribed" ng-submit="subscribe()">\
+			<label for="optIn">Enter a phone number to opt-in: </label>\
+			<input name="optIn" id="smsSubscribeInput" placeholder="XXX-XXX-XXXX"  ng-model="smsNumber">\
+			<br>\
+			<p class="red" ng-show="invalid">Please use XXX-XXX-XXXX format</p>\
+			<input type="submit" id="smsSubscribeSubmit" value="Subscribe">\
+		</form>\
+		<form class="smsNotificationsForm" ng-show="subscribed" ng-submit="unsubscribe()">\
+			<input type="submit" value="Unsubscribe">\
+		</form>'
 	});
 
 })();
