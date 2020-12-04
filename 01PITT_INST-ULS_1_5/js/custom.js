@@ -51,7 +51,7 @@ var pittJS = function pittJS() {
   }
   /*
    * Adds Hathi Trust availablity links where applicable
-   * Adds a link to our help page in each full record 
+   * Creates placeholder for Third Iron/Browzine content
    */
   function prmSearchResultAvailabilityLineAfterTemplate() {
     app.component('prmSearchResultAvailabilityLineAfter', {
@@ -101,12 +101,8 @@ var pittJS = function pittJS() {
     browzine.script = document.createElement("script");
     browzine.script.src = "https://s3.amazonaws.com/browzine-adapters/primo/browzine-primo-adapter.js";
     document.head.appendChild(browzine.script);
-   
-    
 };
    
- 
-
   function hideGetItWithHathi() {
 
     if (!document.getElementsByTagName('prm-request-services')[0]) {
