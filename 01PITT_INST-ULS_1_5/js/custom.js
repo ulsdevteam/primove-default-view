@@ -70,6 +70,13 @@ var pittJS = function pittJS() {
       }
     }
   }
+  
+  function addressSelector() {
+    app.component('prmRequestAfter', {
+      bindings: {parentCtrl: `<`},
+      template: '<address-selector parent-ctrl="$ctrl.parentCtrl"></address-selector>'
+    });
+  }
 
   function preload() {
     for (var i = 0; i < arguments.length; i++) {
@@ -79,7 +86,7 @@ var pittJS = function pittJS() {
   }
 
   function privateSetup() {
-    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability','getTempAddress']);
+    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability','addressSelector']);
     console.log("Executing custom JS.");
 
     angular.element(function () {
@@ -88,6 +95,7 @@ var pittJS = function pittJS() {
       hathiAndReportAProblemLinks();
       chatWidget();
       newSearchSameTab();
+      addressSelector();
       //hideGetItWithHathi();
     });
 
@@ -267,45 +275,170 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
 });
 
 
-angular.module('getTempAddress', []).controller('prmRequestAfterController',function($scope){
-  //watch for the user to select a pickup location in the hold-request form
-  $scope.$watch(angular.bind($scope.$parent.$ctrl.requestService, function () {
-  if (typeof $scope.$parent.$ctrl.requestService !== 'undefined' && typeof $scope.$parent.$ctrl.requestService._formData !== 'undefined' && typeof $scope.$parent.$ctrl.requestService._formData.pickupLocation !== 'undefined'){
-    //result becomes newVal  
-    return $scope.$parent.$ctrl.requestService._formData.pickupLocation;
-   }
-   //every time the form changes:
-  }), function (newVal) {
-    //fix unecessary gap in instructions area:
-    //makes sure the form is loaded..
-    if (typeof angular.element(document.getElementsByTagName('prm-form-field')) !== 'undefined' && typeof angular.element(document.getElementsByTagName('prm-form-field'))[2] !== 'undefined' && typeof angular.element(document.getElementsByTagName('prm-form-field'))[2].children !== 'undefined'){
-      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].style.marginTop='-25px';
+angular
+  .module('addressSelector', [])
+  .constant('addressServiceBaseUrl', 'https://dev-patron.libraries.pitt.edu/')
+  .controller('addressSelectorController', ['$scope', '$http', 'addressServiceBaseUrl', function($scope, $http, addressServiceBaseUrl) {
+    var self = this;
+
+    this.$onInit = function() {
+      $scope.getAddresses();
+    };
+
+    this.getJwt = function() {
+      var jwt = self.primoExplore.storageutil.sessionStorage.primoExploreJwt;
+      // strip quotes from jwt
+      if (jwt.charAt(0) === '"' && jwt.charAt(jwt.length - 1) === '"') {
+        jwt = jwt.slice(1, -1);
+      }    
+      return jwt;
     }
-    //if they choose 'Ship it'...
-    if(typeof newVal == "string" && newVal.indexOf('$$USER_HOME_ADDRESS') > -1){
-      //display home delivery instructions:
-      angular.element(document.querySelector('#noContactRequestInstructions'))[0].style.display='none';
-      angular.element(document.querySelector('#shipItRequestInstructions'))[0].style.display='block';
-      //trying to set a 4-sided border for the comment field conflicts with the insufficient border set by ExL
-      //so highlight it in grey instead?..
-      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.backgroundColor='lightgrey';
-      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.opacity= "0.5";
+
+    $scope.addresses = [];
+    $scope.currentAddress = null;
+    $scope.showInput = false;
+    $scope.addressInput = {
+      line1: "",
+      line2: null,
+      line3: null,
+      line4: null,
+      line5: null,
+      city: "",
+      state_province: "",
+      postal_code: "",
+    };
+    $scope.statusMessage = "";
+    $scope.validationMessage = "";
+    $scope.shownAddressLines = 1;
+
+    $scope.showAddresses = function() {
+      return self.parentCtrl.requestService?._formData?.pickupLocation?.includes('$$USER_HOME_ADDRESS');
+    };
+
+    $scope.getAddresses = function() {
+      $scope.statusMessage = 'Loading address information...';
+      let url = addressServiceBaseUrl + 'address/?jwt=' + self.getJwt();
+      $http.get(url).then(result => {
+        $scope.addresses = result.data;
+        for (let address of $scope.addresses) {
+          if (address.preferred) {
+            $scope.currentAddress = address;
+            break;
+          }
+        }
+        if ($scope.currentAddress == null) {
+          $scope.statusMessage = 'No home address found.';
+        }
+      });
     }
-    //if they choose one of our physical locations...
-    if (typeof newVal == "string" && newVal.indexOf('$$USER_HOME_ADDRESS') == -1){
-      //display no contact pickup instructions
-      angular.element(document.querySelector('#shipItRequestInstructions'))[0].style.display='none';
-      angular.element(document.querySelector('#noContactRequestInstructions'))[0].style.display='block';
-      //fix unecessary gap in instructions area:
-      //trying to set a 4-sided border for the comment field conflicts with the insufficient border set by ExL
-      //so highlight it in grey instead..
-      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.backgroundColor='lightgrey';
-      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.opacity= "0.5";
-      //$scope.shipit=false;
-    }       
+
+    $scope.usingTempAddress = function() {
+      return $scope.currentAddress.address_type[0].value != 'home';
+    }
+
+    $scope.openInput = function() {
+      $scope.showInput = true;
+    }
+
+    $scope.setTemporaryAddress = function() {
+      $scope.validationMessage = '';
+      if (!$scope.addressInput.state_province.trim().match(/^[A-Z]{2}$/)) {
+        $scope.validationMessage += 'The state code is not formatted correctly. ';
+      }
+      if (!$scope.addressInput.postal_code.trim().match(/^\d{5}([-\s]?\d{4})?$/)) {
+        $scope.validationMessage += 'The zip code is not formatted correctly.';
+      }
+      if ($scope.validationMessage != '') {
+        return;
+      }
+      $scope.statusMessage = 'Processing...';
+      $scope.currentAddress = null;
+      $scope.showInput = false;
+      let url = addressServiceBaseUrl + 'address/?jwt=' + self.getJwt();
+      $http.put(url, $scope.addressInput).then(() => {
+        $scope.getAddresses();
+        $scope.validationMessage = "";
+      }, error => {
+        $scope.showInput = true;
+        $scope.validationMessage = "An error occurred."
+      });
+    }
+
+    $scope.revertToHomeAddress = function() {
+      $scope.statusMessage = 'Processing...';
+      $scope.currentAddress = null;
+      let url = addressServiceBaseUrl + 'address/?jwt=' + self.getJwt();
+      $http.delete(url).then(() => {
+        $scope.getAddresses();
+      });
+    }
+
+    $scope.showNextLine = function() {
+      $scope.shownAddressLines += 1;
+    }
+
+  }])
+  .component('addressSelector', {
+    require: {
+      primoExplore: '^primoExplore'
+    },
+    bindings: {parentCtrl: `<`},
+    controller: 'addressSelectorController',
+    template: 
+    '<div layout="row" ng-if="showAddresses()">\
+      <span ng-if="!currentAddress">{{statusMessage}}</span>\
+      <div layout="column" ng-if="currentAddress && !showInput">\
+        <span>Item will be shipped to:</span>\
+        <span ng-if="currentAddress.line1">{{currentAddress.line1}}</span>\
+        <span ng-if="currentAddress.line2">{{currentAddress.line2}}</span>\
+        <span ng-if="currentAddress.line3">{{currentAddress.line3}}</span>\
+        <span ng-if="currentAddress.line4">{{currentAddress.line4}}</span>\
+        <span ng-if="currentAddress.line5">{{currentAddress.line5}}</span>\
+        <span>{{currentAddress.city}}, {{currentAddress.state_province}} {{currentAddress.postal_code}}</span>\
+      </div>\
+      <div layout="column" ng-if="currentAddress && !showInput">\
+        <button class="md-button" ng-if="!usingTempAddress()" (click)="openInput()">Set Temporary Address</button>\
+        <button class="md-button" ng-if="usingTempAddress()" (click)="openInput()">Update Temporary Address</button>\
+        <button class="md-button" ng-if="usingTempAddress()" (click)="revertToHomeAddress()">Revert to Home Address</button>\
+      </div>\
+      <form layout="column" ng-if="showInput">\
+        <label>Enter desired address:</label>\
+        <div style="padding-top:5px;" layout="row">\
+          <label style="width:50px;">Line 1: </label>\
+          <input class="md-input" type="text" ng-model="addressInput.line1"></input>\
+        </div>\
+        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 2">\
+          <label style="width:50px;">Line 2: </label>\
+          <input class="md-input" type="text" ng-model="addressInput.line2"></input>\
+        </div>\
+        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 3">\
+          <label style="width:50px;">Line 3: </label>\
+          <input class="md-input" type="text" ng-model="addressInput.line3"></input>\
+        </div>\
+        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 4">\
+          <label style="width:50px;">Line 4: </label>\
+          <input class="md-input" type="text" ng-model="addressInput.line4"></input>\
+        </div>\
+        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 5">\
+          <label style="width:50px;">Line 5: </label>\
+          <input class="md-input" type="text" ng-model="addressInput.line5"></input>\
+        </div>\
+        <div style="padding-top:5px;" layout="row">\
+          <label style="width:50px;">City: </label>\
+          <input class="md-input" type="text" ng-model="addressInput.city"></input>\
+        </div>\
+        <div style="padding-top:5px;" layout="row">\
+          <label style="width:50px;">State: </label>\
+          <input class="md-input" type="text" ng-model="addressInput.state_province"></input>\
+          </div>\
+        <div style="padding-top:5px;" layout="row">\
+          <label style="width:50px;">Zip: </label>\
+          <input class="md-input" type="text" ng-model="addressInput.postal_code"></input>\
+        </div>\
+        <span class="pink">{{validationMessage}}</span>\
+        <input ng-if="shownAddressLines < 5" type="submit" class="md-button" (click)="showNextLine()" value="Add Another Line"></input>\
+        <input type="submit" class="md-button" (click)="setTemporaryAddress()" value="Save Temporary Address"></input>\
+      </form>\
+    </div>',
   });
-  //attaching this contoller to one of the built-in customization directives
-}).component('prmRequestAfter',{
-  controller:'prmRequestAfterController'
-});
 })();
