@@ -435,7 +435,7 @@ angular
           <label style="width:50px;">Zip: </label>\
           <input class="md-input" type="text" ng-model="addressInput.postal_code"></input>\
         </div>\
-        <span class="pink">{{validationMessage}}</span>\
+        <span>{{validationMessage}}</span>\
         <input ng-if="shownAddressLines < 5" type="submit" class="md-button" (click)="showNextLine()" value="Add Another Line"></input>\
         <input type="submit" class="md-button" (click)="setTemporaryAddress()" value="Save Temporary Address"></input>\
       </form>\
