@@ -323,7 +323,7 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
 
 angular
   .module('addressSelector', [])
-  .constant('addressServiceBaseUrl', 'https://dev-patron.libraries.pitt.edu/')
+  .constant('addressServiceBaseUrl', 'https://' + (location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-') + 'patron.libraries.pitt.edu/')
   .controller('addressSelectorController', ['$scope', '$http', 'addressServiceBaseUrl', function($scope, $http, addressServiceBaseUrl) {
     var self = this;
 
@@ -355,7 +355,7 @@ angular
     };
     $scope.statusMessage = "";
     $scope.validationMessage = "";
-    $scope.shownAddressLines = 1;
+    $scope.shownAddressLines = 2;
 
     $scope.showAddresses = function() {
       return self.parentCtrl.requestService?._formData?.pickupLocation?.includes('$$USER_HOME_ADDRESS');
@@ -384,6 +384,10 @@ angular
 
     $scope.openInput = function() {
       $scope.showInput = true;
+    }
+
+    $scope.hideInput = function() {
+      $scope.showInput = false;
     }
 
     $scope.setTemporaryAddress = function() {
@@ -416,6 +420,8 @@ angular
       let url = addressServiceBaseUrl + 'address/?jwt=' + self.getJwt();
       $http.delete(url).then(() => {
         $scope.getAddresses();
+      }, error => {
+        $scope.validationMessage = "An error occurred."
       });
     }
 
@@ -430,61 +436,62 @@ angular
     },
     bindings: {parentCtrl: `<`},
     controller: 'addressSelectorController',
-    template: 
-    '<div layout="row" ng-if="showAddresses()">\
-      <span ng-if="!currentAddress">{{statusMessage}}</span>\
-      <div layout="column" ng-if="currentAddress && !showInput">\
-        <span>Item will be shipped to:</span>\
-        <span ng-if="currentAddress.line1">{{currentAddress.line1}}</span>\
-        <span ng-if="currentAddress.line2">{{currentAddress.line2}}</span>\
-        <span ng-if="currentAddress.line3">{{currentAddress.line3}}</span>\
-        <span ng-if="currentAddress.line4">{{currentAddress.line4}}</span>\
-        <span ng-if="currentAddress.line5">{{currentAddress.line5}}</span>\
-        <span>{{currentAddress.city}}, {{currentAddress.state_province}} {{currentAddress.postal_code}}</span>\
-      </div>\
-      <div layout="column" ng-if="currentAddress && !showInput">\
-        <button class="md-button" ng-if="!usingTempAddress()" (click)="openInput()">Set Temporary Address</button>\
-        <button class="md-button" ng-if="usingTempAddress()" (click)="openInput()">Update Temporary Address</button>\
-        <button class="md-button" ng-if="usingTempAddress()" (click)="revertToHomeAddress()">Revert to Home Address</button>\
-      </div>\
-      <form layout="column" ng-if="showInput">\
-        <label>Enter desired address:</label>\
-        <div style="padding-top:5px;" layout="row">\
-          <label style="width:50px;">Line 1: </label>\
-          <input class="md-input" type="text" ng-model="addressInput.line1"></input>\
-        </div>\
-        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 2">\
-          <label style="width:50px;">Line 2: </label>\
-          <input class="md-input" type="text" ng-model="addressInput.line2"></input>\
-        </div>\
-        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 3">\
-          <label style="width:50px;">Line 3: </label>\
-          <input class="md-input" type="text" ng-model="addressInput.line3"></input>\
-        </div>\
-        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 4">\
-          <label style="width:50px;">Line 4: </label>\
-          <input class="md-input" type="text" ng-model="addressInput.line4"></input>\
-        </div>\
-        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 5">\
-          <label style="width:50px;">Line 5: </label>\
-          <input class="md-input" type="text" ng-model="addressInput.line5"></input>\
-        </div>\
-        <div style="padding-top:5px;" layout="row">\
-          <label style="width:50px;">City: </label>\
-          <input class="md-input" type="text" ng-model="addressInput.city"></input>\
-        </div>\
-        <div style="padding-top:5px;" layout="row">\
-          <label style="width:50px;">State: </label>\
-          <input class="md-input" type="text" ng-model="addressInput.state_province"></input>\
-          </div>\
-        <div style="padding-top:5px;" layout="row">\
-          <label style="width:50px;">Zip: </label>\
-          <input class="md-input" type="text" ng-model="addressInput.postal_code"></input>\
-        </div>\
-        <span>{{validationMessage}}</span>\
-        <input ng-if="shownAddressLines < 5" type="submit" class="md-button" (click)="showNextLine()" value="Add Another Line"></input>\
-        <input type="submit" class="md-button" (click)="setTemporaryAddress()" value="Save Temporary Address"></input>\
-      </form>\
-    </div>',
+    template:
+    `<div layout="row" ng-if="showAddresses()">
+      <span ng-if="!currentAddress">{{statusMessage}}</span>
+      <div layout="column" ng-if="currentAddress && !showInput">
+        <span>Item will be shipped to:</span>
+        <span ng-if="currentAddress.line1">{{currentAddress.line1}}</span>
+        <span ng-if="currentAddress.line2">{{currentAddress.line2}}</span>
+        <span ng-if="currentAddress.line3">{{currentAddress.line3}}</span>
+        <span ng-if="currentAddress.line4">{{currentAddress.line4}}</span>
+        <span ng-if="currentAddress.line5">{{currentAddress.line5}}</span>
+        <span>{{currentAddress.city}}, {{currentAddress.state_province}} {{currentAddress.postal_code}}</span>
+      </div>
+      <div layout="column" ng-if="currentAddress && !showInput">
+        <button class="md-button" ng-if="!usingTempAddress()" (click)="openInput()">Set Temporary Address</button>
+        <button class="md-button" ng-if="usingTempAddress()" (click)="openInput()">Update Temporary Address</button>
+        <button class="md-button" ng-if="usingTempAddress()" (click)="revertToHomeAddress()">Revert to Home Address</button>
+      </div>
+      <form layout="column" ng-if="showInput">
+        <label>Enter desired address:</label>
+        <div style="padding-top:5px;" layout="row">
+          <label style="width:50px;">Line 1: </label>
+          <input class="md-input" type="text" ng-model="addressInput.line1"></input>
+        </div>
+        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 2">
+          <label style="width:50px;">Line 2: </label>
+          <input class="md-input" type="text" ng-model="addressInput.line2"></input>
+        </div>
+        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 3">
+          <label style="width:50px;">Line 3: </label>
+          <input class="md-input" type="text" ng-model="addressInput.line3"></input>
+        </div>
+        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 4">
+          <label style="width:50px;">Line 4: </label>
+          <input class="md-input" type="text" ng-model="addressInput.line4"></input>
+        </div>
+        <div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 5">
+          <label style="width:50px;">Line 5: </label>
+          <input class="md-input" type="text" ng-model="addressInput.line5"></input>
+        </div>
+        <div style="padding-top:5px;" layout="row">
+          <label style="width:50px;">City: </label>
+          <input class="md-input" type="text" ng-model="addressInput.city"></input>
+        </div>
+        <div style="padding-top:5px;" layout="row">
+          <label style="width:50px;">State: </label>
+          <input class="md-input" type="text" ng-model="addressInput.state_province"></input>
+          </div>
+        <div style="padding-top:5px;" layout="row">
+          <label style="width:50px;">Zip: </label>
+          <input class="md-input" type="text" ng-model="addressInput.postal_code"></input>
+        </div>
+        <span>{{validationMessage}}</span>
+        <input ng-if="shownAddressLines < 5" type="submit" class="md-button" (click)="showNextLine()" value="Add Another Line"></input>
+        <input type="submit" class="md-button" (click)="setTemporaryAddress()" value="Save Temporary Address"></input>
+        <input type="submit" class="md-button" (click)="hideInput()" value="Cancel"></input>
+      </form>
+    </div>`,
   });
 })();
