@@ -327,10 +327,6 @@ angular
   .controller('addressSelectorController', ['$scope', '$http', 'addressServiceBaseUrl', function($scope, $http, addressServiceBaseUrl) {
     var self = this;
 
-    this.$onInit = function() {
-      $scope.getAddresses();
-    };
-
     this.getJwt = function() {
       var jwt = self.primoExplore.storageutil.sessionStorage.primoExploreJwt;
       // strip quotes from jwt
@@ -356,9 +352,15 @@ angular
     $scope.statusMessage = "";
     $scope.validationMessage = "";
     $scope.shownAddressLines = 2;
+    $scope.notYetShown = true;
 
     $scope.showAddresses = function() {
-      return self.parentCtrl.requestService?._formData?.pickupLocation?.includes('$$USER_HOME_ADDRESS');
+      let selected_home_address =  self.parentCtrl.requestService?._formData?.pickupLocation?.includes('$$USER_HOME_ADDRESS');
+      if ($scope.notYetShown && selected_home_address) {
+        $scope.notYetShown = false;
+        $scope.getAddresses();
+      }
+      return selected_home_address;
     };
 
     $scope.getAddresses = function() {
@@ -388,6 +390,9 @@ angular
 
     $scope.hideInput = function() {
       $scope.showInput = false;
+      $scope.statusMessage = "";
+      $scope.validationMessage = "";
+      $scope.shownAddressLines = 2;
     }
 
     $scope.setTemporaryAddress = function() {
@@ -437,7 +442,7 @@ angular
     bindings: {parentCtrl: `<`},
     controller: 'addressSelectorController',
     template:
-    `<div layout="row" ng-if="showAddresses()">
+    `<div class="form-focus layout-margin" style="background-color:#f8f8f8;" layout="row" ng-if="showAddresses()">
       <span ng-if="!currentAddress">{{statusMessage}}</span>
       <div layout="column" ng-if="currentAddress && !showInput">
         <span>Item will be shipped to:</span>
@@ -447,11 +452,9 @@ angular
         <span ng-if="currentAddress.line4">{{currentAddress.line4}}</span>
         <span ng-if="currentAddress.line5">{{currentAddress.line5}}</span>
         <span>{{currentAddress.city}}, {{currentAddress.state_province}} {{currentAddress.postal_code}}</span>
-      </div>
-      <div layout="column" ng-if="currentAddress && !showInput">
-        <button class="md-button" ng-if="!usingTempAddress()" (click)="openInput()">Set Temporary Address</button>
-        <button class="md-button" ng-if="usingTempAddress()" (click)="openInput()">Update Temporary Address</button>
-        <button class="md-button" ng-if="usingTempAddress()" (click)="revertToHomeAddress()">Revert to Home Address</button>
+        <button class="md-button" ng-if="currentAddress && !showInput && !usingTempAddress()" (click)="openInput()">Set Temporary Address</button>
+        <button class="md-button" ng-if="currentAddress && !showInput && usingTempAddress()" (click)="openInput()">Update Temporary Address</button>
+        <button class="md-button" ng-if="currentAddress && !showInput && usingTempAddress()" (click)="revertToHomeAddress()">Revert to Home Address</button>
       </div>
       <form layout="column" ng-if="showInput">
         <label>Enter desired address:</label>
