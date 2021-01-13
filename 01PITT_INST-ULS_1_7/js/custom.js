@@ -353,6 +353,7 @@ angular
     $scope.validationMessage = "";
     $scope.shownAddressLines = 2;
     $scope.notYetShown = true;
+    $scope.loading = false;
 
     $scope.showAddresses = function() {
       let selected_home_address =  self.parentCtrl.requestService?._formData?.pickupLocation?.includes('$$USER_HOME_ADDRESS');
@@ -364,19 +365,25 @@ angular
     };
 
     $scope.getAddresses = function() {
-      $scope.statusMessage = 'Loading address information...';
+      $scope.statusMessage = 'Loading address information';
+      $scope.loading = true;
       let url = addressServiceBaseUrl + 'address/?jwt=' + self.getJwt();
       $http.get(url).then(result => {
         $scope.addresses = result.data;
         for (let address of $scope.addresses) {
           if (address.preferred) {
             $scope.currentAddress = address;
+            $scope.loading = false;
             break;
           }
         }
         if ($scope.currentAddress == null) {
           $scope.statusMessage = 'No home address found.';
+          $scope.loading = false;
         }
+      }, error => {
+        $scope.statusMessage = 'An error occurred.';
+        $scope.loading = false;
       });
     }
 
@@ -406,7 +413,8 @@ angular
       if ($scope.validationMessage != '') {
         return;
       }
-      $scope.statusMessage = 'Processing...';
+      $scope.statusMessage = 'Processing';
+      $scope.loading = true;
       $scope.currentAddress = null;
       $scope.showInput = false;
       let url = addressServiceBaseUrl + 'address/?jwt=' + self.getJwt();
@@ -416,17 +424,20 @@ angular
       }, error => {
         $scope.showInput = true;
         $scope.validationMessage = "An error occurred."
+        $scope.loading = false;
       });
     }
 
     $scope.revertToHomeAddress = function() {
-      $scope.statusMessage = 'Processing...';
+      $scope.statusMessage = 'Processing';
+      $scope.loading = true;
       $scope.currentAddress = null;
       let url = addressServiceBaseUrl + 'address/?jwt=' + self.getJwt();
       $http.delete(url).then(() => {
         $scope.getAddresses();
       }, error => {
-        $scope.validationMessage = "An error occurred."
+        $scope.statusMessage = "An error occurred."
+        $scope.loading = false;
       });
     }
 
@@ -443,7 +454,7 @@ angular
     controller: 'addressSelectorController',
     template:
     `<div class="form-focus layout-margin" style="background-color:#f8f8f8;" layout="row" ng-if="showAddresses()">
-      <span ng-if="!currentAddress">{{statusMessage}}</span>
+      <span ng-if="!currentAddress">{{statusMessage}}<span ng-if="loading" class="loading"></span></span>
       <div layout="column" ng-if="currentAddress && !showInput">
         <span>Item will be shipped to:</span>
         <span ng-if="currentAddress.line1">{{currentAddress.line1}}</span>
