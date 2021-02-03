@@ -133,6 +133,8 @@ var pittJS = function pittJS() {
       chatWidget();
       newSearchSameTab();
       thirdIron();
+      //hideGetItWithHathi();
+
     });
 
     return;
