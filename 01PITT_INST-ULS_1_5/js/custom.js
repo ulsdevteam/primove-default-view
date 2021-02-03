@@ -51,14 +51,58 @@ var pittJS = function pittJS() {
   }
   /*
    * Adds Hathi Trust availablity links where applicable
-   * Adds a link to our help page in each full record 
+   * Creates placeholder for Third Iron/Browzine content
    */
-  function hathiAndReportAProblemLinks() {
+  function prmSearchResultAvailabilityLineAfterTemplate() {
     app.component('prmSearchResultAvailabilityLineAfter', {
       //note the ignore-copyright attribute.  Once ETAS ends this will need to be removed.  Entity-id should request SSO login on the way to the Hathi site.
-      template: '<hathi-trust-availability hide-online="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability><br><span class="reportProblemLink"><a href="https://library.pitt.edu/ask-email?referringUrl=' + window.location.href + '">Report a Problem</a></span>'
+	  template: '<hathi-trust-availability hide-online="true" entity-id="https://passport.pitt.edu/idp/shibboleth"></hathi-trust-availability>\
+	  <third-iron></third-iron>'
+	  // Note: Report a Problem links are generated in the thirdIron module to work around their layout requirements
     });
   }
+
+  function thirdIron() {
+    window.browzine = {
+      api: "https://public-api.thirdiron.com/public/v1/libraries/154",
+      apiKey: "your api key here",
+   
+      journalCoverImagesEnabled: true,
+   
+      journalBrowZineWebLinkTextEnabled: true,
+      journalBrowZineWebLinkText: "View Journal Contents",
+   
+      articleBrowZineWebLinkTextEnabled: true,
+      articleBrowZineWebLinkText: "View Issue Contents",
+   
+      articlePDFDownloadLinkEnabled: true,
+      articlePDFDownloadLinkText: "Download Article PDF",
+   
+      articleLinkEnabled: true,
+      articleLinkText: "Read Article",
+   
+      printRecordsIntegrationEnabled: true,
+   
+      unpaywallEmailAddressKey: "email@pitt.edu",
+   
+      articlePDFDownloadViaUnpaywallEnabled: true,
+      articlePDFDownloadViaUnpaywallText: "Download PDF (via Unpaywall)",
+   
+      articleLinkViaUnpaywallEnabled: true,
+      articleLinkViaUnpaywallText: "Read Article (via Unpaywall)",
+   
+      articleAcceptedManuscriptPDFViaUnpaywallEnabled: true,
+      articleAcceptedManuscriptPDFViaUnpaywallText: "Download PDF (Accepted Manuscript via Unpaywall)",
+   
+      articleAcceptedManuscriptArticleLinkViaUnpaywallEnabled: true,
+      articleAcceptedManuscriptArticleLinkViaUnpaywallText: "Read Article (Accepted Manuscript via Unpaywall)",
+    };
+   
+    browzine.script = document.createElement("script");
+    browzine.script.src = "https://s3.amazonaws.com/browzine-adapters/primo/browzine-primo-adapter.js";
+    document.head.appendChild(browzine.script);
+};
+   
   function hideGetItWithHathi() {
 
     if (!document.getElementsByTagName('prm-request-services')[0]) {
@@ -79,16 +123,18 @@ var pittJS = function pittJS() {
   }
 
   function privateSetup() {
-    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability','getTempAddress']);
+    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'getTempAddress', 'thirdIron']);
     console.log("Executing custom JS.");
 
     angular.element(function () {
       console.log('page loading completed');
       addGoogleAnalytics();
-      hathiAndReportAProblemLinks();
+      prmSearchResultAvailabilityLineAfterTemplate();
       chatWidget();
       newSearchSameTab();
+      thirdIron();
       //hideGetItWithHathi();
+
     });
 
     return;
@@ -266,46 +312,85 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
               </span>'
 });
 
-
 angular.module('getTempAddress', []).controller('prmRequestAfterController',function($scope){
-  //watch for the user to select a pickup location in the hold-request form
-  $scope.$watch(angular.bind($scope.$parent.$ctrl.requestService, function () {
-  if (typeof $scope.$parent.$ctrl.requestService !== 'undefined' && typeof $scope.$parent.$ctrl.requestService._formData !== 'undefined' && typeof $scope.$parent.$ctrl.requestService._formData.pickupLocation !== 'undefined'){
-    //result becomes newVal  
-    return $scope.$parent.$ctrl.requestService._formData.pickupLocation;
-   }
-   //every time the form changes:
-  }), function (newVal) {
-    //fix unecessary gap in instructions area:
-    //makes sure the form is loaded..
-    if (typeof angular.element(document.getElementsByTagName('prm-form-field')) !== 'undefined' && typeof angular.element(document.getElementsByTagName('prm-form-field'))[2] !== 'undefined' && typeof angular.element(document.getElementsByTagName('prm-form-field'))[2].children !== 'undefined'){
-      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].style.marginTop='-25px';
-    }
-    //if they choose 'Ship it'...
-    if(typeof newVal == "string" && newVal.indexOf('$$USER_HOME_ADDRESS') > -1){
-      //display home delivery instructions:
-      angular.element(document.querySelector('#noContactRequestInstructions'))[0].style.display='none';
-      angular.element(document.querySelector('#shipItRequestInstructions'))[0].style.display='block';
-      //trying to set a 4-sided border for the comment field conflicts with the insufficient border set by ExL
-      //so highlight it in grey instead?..
-      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.backgroundColor='lightgrey';
-      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.opacity= "0.5";
-    }
-    //if they choose one of our physical locations...
-    if (typeof newVal == "string" && newVal.indexOf('$$USER_HOME_ADDRESS') == -1){
-      //display no contact pickup instructions
-      angular.element(document.querySelector('#shipItRequestInstructions'))[0].style.display='none';
-      angular.element(document.querySelector('#noContactRequestInstructions'))[0].style.display='block';
-      //fix unecessary gap in instructions area:
-      //trying to set a 4-sided border for the comment field conflicts with the insufficient border set by ExL
-      //so highlight it in grey instead..
-      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.backgroundColor='lightgrey';
-      angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.opacity= "0.5";
-      //$scope.shipit=false;
-    }       
+	//watch for the user to select a pickup location in the hold-request form
+	$scope.$watch(angular.bind($scope.$parent.$ctrl.requestService, function () {
+	if (typeof $scope.$parent.$ctrl.requestService !== 'undefined' && typeof $scope.$parent.$ctrl.requestService._formData !== 'undefined' && typeof $scope.$parent.$ctrl.requestService._formData.pickupLocation !== 'undefined'){
+	  //result becomes newVal  
+	  return $scope.$parent.$ctrl.requestService._formData.pickupLocation;
+	 }
+	 //every time the form changes:
+	}), function (newVal) {
+	  //fix unecessary gap in instructions area:
+	  //makes sure the form is loaded..
+	  if (typeof angular.element(document.getElementsByTagName('prm-form-field')) !== 'undefined' && typeof angular.element(document.getElementsByTagName('prm-form-field'))[2] !== 'undefined' && typeof angular.element(document.getElementsByTagName('prm-form-field'))[2].children !== 'undefined'){
+		angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].style.marginTop='-25px';
+	  }
+	  //if they choose 'Ship it'...
+	  if(typeof newVal == "string" && newVal.indexOf('$$USER_HOME_ADDRESS') > -1){
+		//display home delivery instructions:
+		angular.element(document.querySelector('#noContactRequestInstructions'))[0].style.display='none';
+		angular.element(document.querySelector('#shipItRequestInstructions'))[0].style.display='block';
+		//trying to set a 4-sided border for the comment field conflicts with the insufficient border set by ExL
+		//so highlight it in grey instead?..
+		angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.backgroundColor='lightgrey';
+		angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.opacity= "0.5";
+	  }
+	  //if they choose one of our physical locations...
+	  if (typeof newVal == "string" && newVal.indexOf('$$USER_HOME_ADDRESS') == -1){
+		//display no contact pickup instructions
+		angular.element(document.querySelector('#shipItRequestInstructions'))[0].style.display='none';
+		angular.element(document.querySelector('#noContactRequestInstructions'))[0].style.display='block';
+		//fix unecessary gap in instructions area:
+		//trying to set a 4-sided border for the comment field conflicts with the insufficient border set by ExL
+		//so highlight it in grey instead..
+		angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.backgroundColor='lightgrey';
+		angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.opacity= "0.5";
+		//$scope.shipit=false;
+	  }       
+	});
+	//attaching this contoller to one of the built-in customization directives
+  }).component('prmRequestAfter',{
+	controller:'prmRequestAfterController'
   });
-  //attaching this contoller to one of the built-in customization directives
-}).component('prmRequestAfter',{
-  controller:'prmRequestAfterController'
-});
+  
+
+//third iron integration
+angular.module('thirdIron', []).controller('thirdIronController', function($scope) {
+	this.$onInit = function () {
+		//simulate browzine-primo-adapter.js expected path to prmSearchResultAvailabilityLine 
+		//it expects that we bind to this scope through the parentCtrl property on the prmSearchResultAvailabilityLineAfter directive
+		//we don't want to alter that directive's controller since it would conflict with Hathi Trust module's use of it
+		//so require what we want directly and pretend we're getting to it through the original means 
+		$scope.$ctrl.parentCtrl = this.prmSearchResultAvailabilityLine;
+		window.browzine.primo.searchResult($scope);
+
+			//The browzine adapter's expected access:
+			/*  
+			function getScope($scope) {
+				return $scope && $scope.$ctrl && $scope.$ctrl.parentCtrl ? $scope.$ctrl.parentCtrl : undefined;
+			};
+			*/
+
+			//why do the contents links show up outside the 'after' directive?
+			/* browzine-primo-adapter.js ~672
+				querySelector("prm-search-result-availability-line
+				.insertAdjacentHTML()
+			*/
+
+	//Ensure 'Report a Problem' link shows up after the Browzine content injected outside the prmSearchResultAvailabilityLineAfter section
+		var span = document.createElement("span");
+		var reportProblem = document.createElement('a');
+		reportProblem.href='https://library.pitt.edu/ask-email?referringUrl=' + window.location.href;
+		reportProblem.innerText='Report a Problem';
+		span.classList.add('reportProblemLink');
+		span.appendChild(reportProblem);
+		angular.element(document.getElementsByTagName('prm-search-result-availability-line'))[0].after(span);
+	}
+	}).component('thirdIron', {
+		//Access grandparent scope
+		require: {prmSearchResultAvailabilityLine:'^prmSearchResultAvailabilityLine'},
+		controller: 'thirdIronController',
+  });
+
 })();
