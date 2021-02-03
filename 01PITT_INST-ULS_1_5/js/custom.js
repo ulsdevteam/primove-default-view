@@ -76,7 +76,7 @@ var pittJS = function pittJS() {
       articleBrowZineWebLinkText: "View Issue Contents",
    
       articlePDFDownloadLinkEnabled: true,
-      articlePDFDownloadLinkText: "Download PDF",
+      articlePDFDownloadLinkText: "Download Article PDF",
    
       articleLinkEnabled: true,
       articleLinkText: "Read Article",
@@ -123,7 +123,7 @@ var pittJS = function pittJS() {
   }
 
   function privateSetup() {
-    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'thirdIron']);
+    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'getTempAddress', 'thirdIron']);
     console.log("Executing custom JS.");
 
     angular.element(function () {
@@ -311,6 +311,49 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
                 </a>\
               </span>'
 });
+
+angular.module('getTempAddress', []).controller('prmRequestAfterController',function($scope){
+	//watch for the user to select a pickup location in the hold-request form
+	$scope.$watch(angular.bind($scope.$parent.$ctrl.requestService, function () {
+	if (typeof $scope.$parent.$ctrl.requestService !== 'undefined' && typeof $scope.$parent.$ctrl.requestService._formData !== 'undefined' && typeof $scope.$parent.$ctrl.requestService._formData.pickupLocation !== 'undefined'){
+	  //result becomes newVal  
+	  return $scope.$parent.$ctrl.requestService._formData.pickupLocation;
+	 }
+	 //every time the form changes:
+	}), function (newVal) {
+	  //fix unecessary gap in instructions area:
+	  //makes sure the form is loaded..
+	  if (typeof angular.element(document.getElementsByTagName('prm-form-field')) !== 'undefined' && typeof angular.element(document.getElementsByTagName('prm-form-field'))[2] !== 'undefined' && typeof angular.element(document.getElementsByTagName('prm-form-field'))[2].children !== 'undefined'){
+		angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].style.marginTop='-25px';
+	  }
+	  //if they choose 'Ship it'...
+	  if(typeof newVal == "string" && newVal.indexOf('$$USER_HOME_ADDRESS') > -1){
+		//display home delivery instructions:
+		angular.element(document.querySelector('#noContactRequestInstructions'))[0].style.display='none';
+		angular.element(document.querySelector('#shipItRequestInstructions'))[0].style.display='block';
+		//trying to set a 4-sided border for the comment field conflicts with the insufficient border set by ExL
+		//so highlight it in grey instead?..
+		angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.backgroundColor='lightgrey';
+		angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.opacity= "0.5";
+	  }
+	  //if they choose one of our physical locations...
+	  if (typeof newVal == "string" && newVal.indexOf('$$USER_HOME_ADDRESS') == -1){
+		//display no contact pickup instructions
+		angular.element(document.querySelector('#shipItRequestInstructions'))[0].style.display='none';
+		angular.element(document.querySelector('#noContactRequestInstructions'))[0].style.display='block';
+		//fix unecessary gap in instructions area:
+		//trying to set a 4-sided border for the comment field conflicts with the insufficient border set by ExL
+		//so highlight it in grey instead..
+		angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.backgroundColor='lightgrey';
+		angular.element(document.getElementsByTagName('prm-form-field'))[2].children[0].children[0].children[1].style.opacity= "0.5";
+		//$scope.shipit=false;
+	  }       
+	});
+	//attaching this contoller to one of the built-in customization directives
+  }).component('prmRequestAfter',{
+	controller:'prmRequestAfterController'
+  });
+  
 
 //third iron integration
 angular.module('thirdIron', []).controller('thirdIronController', function($scope) {
