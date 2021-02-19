@@ -291,3 +291,49 @@ md-input-container label[translate="almaRequest.comment"]{position:relative;}
 
 #noContactRequestInstructions{display:none; background-color:pink; padding:5px;}
 #shipItRequestInstructions{display:none; background-color:pink; padding:5px;}
+
+/* top navigation fix after ThirdIron integration*/
+a.zero-margin.flex-button.multi-line-button.button-over-dark.md-button.md-primoExplore-theme.md-ink-ripple.layout-align-center-center.layout-column:hover {
+    color: #fff;
+    background-color: rgb(0 0 0 / 57%);
+}
+/* flexbox behavior fix */
+.flex-xs-100 {
+    max-width: 25%;
+}
+/* recenter navigation menu */
+.top-nav-bar .layout-full-height {
+margin-right: -86px;
+}
+/* fixed alignment of icons with top navigation items */
+.layout-row {
+   flex-direction: row;
+   padding-top: 1%;
+}
+/*aligns navigation in header */
+.flex-50, .layout-row>.flex-50 {
+   padding-top: 2%;
+}
+/* removed extra padding no longer needed in navigation bar*/
+.top-nav-bar.layout-row {
+   padding-top: 0%;
+}
+/* changed top bar to percentage */
+prm-topbar {
+   height: 4%;
+}
+/* yellow message bar */
+#message_top {
+   width: 100%;
+   background-color: #feb81c;
+   text-align: center;
+   font-size: large;
+   font-weight: 700;
+   position: relative;
+   z-index: 100;
+}
+/* text in yellow bar */
+#message_top p {
+   margin: 0;
+   padding: 1% 2%;
+}
