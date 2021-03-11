@@ -231,10 +231,13 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
 #hslsimg:hover{background-image: url(../img/hslshover.jpg);}
 
 /*LibChat Widget*/
-.lcs_slide_out.lcs_slide_out-r {top:400px;}
+.lcs_slide_out.lcs_slide_out-r {top:40px;}
 .lcs_slide_out-r header a:focus, .lcs_slide_out-r header a:hover {box-shadow:inset 0 0 0 0;}
 .lcs_slide_out-r header a:hover {filter: drop-shadow(2px 2px 2px gray);}
-
+@media (min-height: 450px) {
+	.lcs_slide_out.lcs_slide_out-r {top: 30vh;} }
+@media (min-height: 750px) { 
+	.lcs_slide_out.lcs_slide_out-r {top: 50vh;} }
 
 /*============= Report a Problem Link ===============*/
 /* links should appear in records, but not in results list */
@@ -264,3 +267,73 @@ span.umnHathiTrustLink:hover md-icon svg {
 
 /*make lengthy custom comment field label for hold-request form not overlap nearby elements*/
 md-input-container label[translate="almaRequest.comment"]{position:relative;} 
+
+.dialogdemoBasicUsage #popupContainer {
+	position: relative; }
+  
+  .dialogdemoBasicUsage .footer {
+	width: 100%;
+	text-align: center;
+	margin-left: 20px; }
+  
+  .dialogdemoBasicUsage .footer, .dialogdemoBasicUsage .footer > code {
+	font-size: 0.8em;
+	margin-top: 50px; }
+  
+  .dialogdemoBasicUsage button {
+	width: 200px; }
+  
+  .dialogdemoBasicUsage div#status {
+	color: #c60008; }
+  
+  .dialogdemoBasicUsage .dialog-demo-prerendered md-checkbox {
+	margin-bottom: 0; }
+
+#noContactRequestInstructions{display:none; background-color:pink; padding:5px;}
+#shipItRequestInstructions{display:none; background-color:pink; padding:5px;}
+
+/* top navigation fix after ThirdIron integration*/
+a.zero-margin.flex-button.multi-line-button.button-over-dark.md-button.md-primoExplore-theme.md-ink-ripple.layout-align-center-center.layout-column:hover {
+    color: #fff;
+    background-color: rgb(0 0 0 / 57%);
+}
+/* flexbox behavior fix */
+div.flex.flex-xs-100 {
+    min-width: 25%;
+}
+/* recenter navigation menu */
+.top-nav-bar .layout-full-height {
+margin-right: -86px;
+}
+/* fixed alignment of icons with top navigation items */
+.layout-row {
+   flex-direction: row;
+   padding-top: 1%;
+}
+/*aligns navigation in header */
+.flex-50, .layout-row>.flex-50 {
+   padding-top: 2%;
+}
+/* removed extra padding no longer needed in navigation bar*/
+.top-nav-bar.layout-row {
+   padding-top: 0%;
+}
+/* changed top bar to percentage */
+prm-topbar {
+   height: 4%;
+}
+/* yellow message bar */
+#message_top {
+   width: 100%;
+   background-color: #feb81c;
+   text-align: center;
+   font-size: large;
+   font-weight: 700;
+   position: relative;
+   z-index: 100;
+}
+/* text in yellow bar */
+#message_top p {
+   margin: 0;
+   padding: 1% 2%;
+}
