@@ -298,8 +298,8 @@ a.zero-margin.flex-button.multi-line-button.button-over-dark.md-button.md-primoE
     background-color: rgb(0 0 0 / 57%);
 }
 /* flexbox behavior fix */
-.flex-xs-100 {
-    max-width: 25%;
+div.flex.flex-xs-100 {
+    min-width: 25%;
 }
 /* recenter navigation menu */
 .top-nav-bar .layout-full-height {
