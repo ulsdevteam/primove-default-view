@@ -65,7 +65,7 @@ var pittJS = function pittJS() {
   function thirdIron() {
     window.browzine = {
       api: "https://public-api.thirdiron.com/public/v1/libraries/154",
-      apiKey: "your api key here",
+      apiKey: "6d4e92f4-0a30-40fa-8dcb-5834e03197a0",
    
       journalCoverImagesEnabled: true,
    
@@ -83,7 +83,7 @@ var pittJS = function pittJS() {
    
       printRecordsIntegrationEnabled: true,
    
-      unpaywallEmailAddressKey: "email@pitt.edu",
+      unpaywallEmailAddressKey: "uls-systemsdevelopment@pitt.edu",
    
       articlePDFDownloadViaUnpaywallEnabled: true,
       articlePDFDownloadViaUnpaywallText: "Download PDF (via Unpaywall)",
