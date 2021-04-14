@@ -130,7 +130,7 @@ var pittJS = function pittJS() {
   }
 
   function privateSetup() {
-    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'getTempAddress', 'thirdIron', 'addressSelector']);
+    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'thirdIron', 'addressSelector']);
     console.log("Executing custom JS.");
 
     angular.element(function () {
