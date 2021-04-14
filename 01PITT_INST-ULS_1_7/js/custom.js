@@ -453,7 +453,7 @@ angular
     bindings: {parentCtrl: `<`},
     controller: 'addressSelectorController',
     template:
-    `<div class="form-focus layout-margin" style="background-color:#f8f8f8;" layout="row" ng-if="showAddresses()">
+    `<div class="shipItAddress form-focus layout-margin" style="background-color:#f8f8f8;" layout="row" ng-if="showAddresses()">
       <span ng-if="!currentAddress">{{statusMessage}}<span ng-if="loading" class="loading"></span></span>
       <div layout="column" ng-if="currentAddress && !showInput">
         <span>Item will be shipped to:</span>
@@ -468,7 +468,8 @@ angular
         <button class="md-button" ng-if="currentAddress && !showInput && usingTempAddress()" (click)="revertToHomeAddress()">Revert to Home Address</button>
       </div>
       <form layout="column" ng-if="showInput">
-        <label>Enter desired address:</label>
+        <label>Enter the desired address below.</label>
+        <label>Note that this is for Library use only and does not change your official address with the University.</label>
         <div style="padding-top:5px;" layout="row">
           <label style="width:50px;">Line 1: </label>
           <input class="md-input" type="text" ng-model="addressInput.line1"></input>
