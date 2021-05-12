@@ -130,7 +130,7 @@ var pittJS = function pittJS() {
   }
 
   function privateSetup() {
-    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'thirdIron', 'addressSelector']);
+    app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector']);
     console.log("Executing custom JS.");
 
     angular.element(function () {
@@ -453,7 +453,7 @@ angular
     bindings: {parentCtrl: `<`},
     controller: 'addressSelectorController',
     template:
-    `<div class="shipItAddress form-focus layout-margin" style="background-color:#f8f8f8;" layout="row" ng-if="showAddresses()">
+    `<div class="shipItAddress form-focus layout-margin" layout="row" ng-if="showAddresses()">
       <span ng-if="!currentAddress">{{statusMessage}}<span ng-if="loading" class="loading"></span></span>
       <div layout="column" ng-if="currentAddress && !showInput">
         <span>Item will be shipped to:</span>
@@ -463,9 +463,9 @@ angular
         <span ng-if="currentAddress.line4">{{currentAddress.line4}}</span>
         <span ng-if="currentAddress.line5">{{currentAddress.line5}}</span>
         <span>{{currentAddress.city}}, {{currentAddress.state_province}} {{currentAddress.postal_code}}</span>
-        <button class="md-button" ng-if="currentAddress && !showInput && !usingTempAddress()" (click)="openInput()">Set Temporary Address</button>
-        <button class="md-button" ng-if="currentAddress && !showInput && usingTempAddress()" (click)="openInput()">Update Temporary Address</button>
-        <button class="md-button" ng-if="currentAddress && !showInput && usingTempAddress()" (click)="revertToHomeAddress()">Revert to Home Address</button>
+        <button class="md-button md-raised" ng-if="currentAddress && !showInput && !usingTempAddress()" (click)="openInput()">Set Temporary Address</button>
+        <button class="md-button md-raised" ng-if="currentAddress && !showInput && usingTempAddress()" (click)="openInput()">Update Temporary Address</button>
+        <button class="md-button md-raised" ng-if="currentAddress && !showInput && usingTempAddress()" (click)="revertToHomeAddress()">Revert to Home Address</button>
       </div>
       <form layout="column" ng-if="showInput">
         <label>Enter the desired address below.</label>
@@ -503,9 +503,9 @@ angular
           <input class="md-input" type="text" ng-model="addressInput.postal_code"></input>
         </div>
         <span>{{validationMessage}}</span>
-        <input ng-if="shownAddressLines < 5" type="submit" class="md-button" (click)="showNextLine()" value="Add Another Line"></input>
-        <input type="submit" class="md-button" (click)="setTemporaryAddress()" value="Save Temporary Address"></input>
-        <input type="submit" class="md-button" (click)="hideInput()" value="Cancel"></input>
+        <input ng-if="shownAddressLines < 5" type="submit" class="md-button md-raised" (click)="showNextLine()" value="Add Another Line"></input>
+        <input type="submit" class="md-button md-raised" (click)="setTemporaryAddress()" value="Save Temporary Address"></input>
+        <input type="submit" class="md-button md-raised" (click)="hideInput()" value="Cancel"></input>
       </form>
     </div>`,
   });

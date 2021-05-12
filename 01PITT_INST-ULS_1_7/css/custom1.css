@@ -338,6 +338,20 @@ prm-topbar {
    padding: 1% 2%;
 }
 
+.shipItAddress {
+	background-color:#f8f8f8;
+	z-index: 1;
+	position: relative;
+	top: -250px;
+	left: 10px;
+	max-width: 320px;
+	width: auto;
+}
+
+.shipItAddress .md-button {
+	border: 1px solid black;
+}
+
 /* loading dots */
 .loading:after {
 	content: '.';
