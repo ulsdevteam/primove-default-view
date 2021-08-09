@@ -292,87 +292,41 @@ md-input-container label[translate="almaRequest.comment"]{position:relative;}
 #noContactRequestInstructions{display:none; background-color:pink; padding:5px;}
 #shipItRequestInstructions{display:none; background-color:pink; padding:5px;}
 
-/* top navigation fix after ThirdIron integration*/
-a.zero-margin.flex-button.multi-line-button.button-over-dark.md-button.md-primoExplore-theme.md-ink-ripple.layout-align-center-center.layout-column:hover {
-    color: #fff;
-    background-color: rgb(0 0 0 / 57%);
-}
-/* flexbox behavior fix */
-div.flex.flex-xs-100 {
-    min-width: 25%;
-}
-/* recenter navigation menu */
-.top-nav-bar .layout-full-height {
-margin-right: -86px;
-}
-/* fixed alignment of icons with top navigation items */
-.layout-row {
-   flex-direction: row;
-   padding-top: 1%;
-}
-/*aligns navigation in header */
-.flex-50, .layout-row>.flex-50 {
-   padding-top: 2%;
-}
-/* removed extra padding no longer needed in navigation bar*/
-.top-nav-bar.layout-row {
-   padding-top: 0%;
-}
-/* changed top bar to percentage */
-prm-topbar {
-   height: 4%;
-}
-/* yellow message bar */
-#message_top {
-   width: 100%;
-   background-color: #feb81c;
-   text-align: center;
-   font-size: large;
-   font-weight: 700;
-   position: relative;
-   z-index: 100;
-}
-/* text in yellow bar */
-#message_top p {
-   margin: 0;
-   padding: 1% 2%;
-}
-
 .shipItAddress {
 	background-color:#f8f8f8;
 	z-index: 1;
 	position: relative;
-	top: -250px;
+	top: -200px;
 	left: 10px;
 	max-width: 320px;
 	width: auto;
+}
+
+/*we're hijacking .formSubmited (sic) while adding more form validation, so block this tooltip */
+md-tooltip[ng-if="$ctrl.formSubmited"] { 
+	display:none;
+}
+
+.zipcodeBlacklistWarning {
+	font-weight: bold;
 }
 
 .shipItAddress .md-button {
 	border: 1px solid black;
 }
 
-/* loading dots */
-.loading:after {
-	content: '.';
-	animation: dots 1s steps(5, end) infinite;}
+.tempAddressError {
+margin-left: 10px;
+font-size: small;
+font-weight: bold;
+color: red;
+}
 
-@keyframes dots {
-	0%, 20% {
-	color: black;
-	text-shadow:
-		.25em 0 0 rgba(0,0,0,0),
-		.5em 0 0 rgba(0,0,0,0);}
-	40% {
-	color: black;
-	text-shadow:
-		.25em 0 0 rgba(0,0,0,0),
-		.5em 0 0 rgba(0,0,0,0);}
-	60% {
-	text-shadow:
-		.25em 0 0 black,
-		.5em 0 0 rgba(0,0,0,0);}
-	80%, 100% {
-	text-shadow:
-		.25em 0 0 black,
-		.5em 0 0 black;}}
+.addressFormSubmissionErrorMessage {
+	font-weight: bold;
+}
+
+.shipItAddress .addressFormNote{
+	font-size: smaller;
+	margin-left: 5px;
+}
