@@ -289,7 +289,6 @@ md-input-container label[translate="almaRequest.comment"]{position:relative;}
   .dialogdemoBasicUsage .dialog-demo-prerendered md-checkbox {
 	margin-bottom: 0; }
 
-#noContactRequestInstructions{display:none; background-color:pink; padding:5px;}
 #shipItRequestInstructions{display:none; background-color:pink; padding:5px;}
 
 /* top navigation fix after ThirdIron integration*/
@@ -322,18 +321,42 @@ margin-right: -86px;
 prm-topbar {
    height: 4%;
 }
-/* yellow message bar */
-#message_top {
-   width: 100%;
-   background-color: #feb81c;
-   text-align: center;
-   font-size: large;
-   font-weight: 700;
-   position: relative;
-   z-index: 100;
+
+.shipItAddress {
+	background-color:#f8f8f8;
+	z-index: 1;
+	position: relative;
+	top: -200px;
+	left: 10px;
+	max-width: 320px;
+	width: auto;
 }
-/* text in yellow bar */
-#message_top p {
-   margin: 0;
-   padding: 1% 2%;
+
+/*we're hijacking .formSubmited (sic) while adding more form validation, so block this tooltip */
+md-tooltip[ng-if="$ctrl.formSubmited"] { 
+	display:none;
+}
+
+.zipcodeBlacklistWarning {
+	font-weight: bold;
+}
+
+.shipItAddress .md-button {
+	border: 1px solid black;
+}
+
+.tempAddressError {
+margin-left: 10px;
+font-size: small;
+font-weight: bold;
+color: red;
+}
+
+.addressFormSubmissionErrorMessage {
+	font-weight: bold;
+}
+
+.shipItAddress .addressFormNote{
+	font-size: smaller;
+	margin-left: 5px;
 }
