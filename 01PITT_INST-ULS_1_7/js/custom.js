@@ -130,7 +130,7 @@
 		}
 
 		function privateSetup() {
-			app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'thirdIron','addressSelector']);
+			app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron']);
 			console.log("Executing custom JS.");
 
 			angular.element(function () {
