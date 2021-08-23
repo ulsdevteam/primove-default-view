@@ -324,7 +324,7 @@
 	angular
 		.module('addressSelector', [])
 		.constant('addressServiceBaseUrl', 'https://' + (location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-') + 'patron.libraries.pitt.edu/')
-		.constant('zipcodeBlacklist', ['15217', '15213', '15260'])
+		.constant('zipcodeBlacklist', ['15201','15203','15206','15207','15208','15211','15213','15217','15219','15222','15224','15230','15232','15233','15260'])
 		.constant('submissionErrorMessage', "An error occurred!")
 		.controller('addressSelectorController', ['$scope', '$http', 'addressServiceBaseUrl', 'zipcodeBlacklist', 'submissionErrorMessage', function ($scope, $http, addressServiceBaseUrl, zipcodeBlacklist, submissionErrorMessage) {
 			var self = this;
