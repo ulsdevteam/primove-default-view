@@ -363,7 +363,7 @@
 			$scope.zipCodeBlacklist = function () {
 				//$scope.currentAddress seems to become null during process of reverting back to permanent address
 				//don't allow submission until it has a value
-				if (!$scope.currentAddress || zipcodeBlacklist.includes($scope.currentAddress.postal_code)) {
+				if (!$scope.currentAddress || zipcodeBlacklist.includes($scope.currentAddress.postal_code.substring(0,5))) {
 					$scope.eligibleForShipIt = false;
 					$scope.shippingAvailability = "cannot";
 				}
@@ -454,8 +454,8 @@
 				if (!$scope.addressInput.postal_code.trim().match(/^\d{5}([-\s]?\d{4})?$/)) {
 					$scope.errors.postal_code = 'The zip code is not formatted correctly.';
 				}
-				if (zipcodeBlacklist.includes($scope.addressInput.postal_code)) {
-					$scope.errors.postal_code = 'Addresses in this zip code are not eligible for shipping.';
+				if (zipcodeBlacklist.includes($scope.addressInput.postal_code.substring(0,5))) {
+					$scope.errors.postal_code = 'Addresses in this zip code are not eligible for Ship It service.';
 				}
 
 				//don't bother submitting to the Alma API if there is an error
@@ -510,7 +510,7 @@
 				`<div class="shipItAddress form-focus layout-margin" layout="row" ng-if="showAddresses()">
 					<span ng-if="!currentAddress">{{statusMessage}}<span ng-if="loading" class="loading"></span></span>
 					<div layout="column" ng-if="currentAddress && !showInput">
-						<span ng-if="!eligibleForShipIt" class="zipcodeBlacklistWarning">Addresses near Pitt campuses are not eligible for shipping</span>
+						<span ng-if="!eligibleForShipIt" class="zipcodeBlacklistWarning">Addresses near the Pitt campus are not eligible for Ship It service</span>
 						<span>Item {{shippingAvailability}} be shipped to:</span>
 						<span ng-if="currentAddress.line1">{{currentAddress.line1}}</span>
 						<span ng-if="currentAddress.line2">{{currentAddress.line2}}</span>
