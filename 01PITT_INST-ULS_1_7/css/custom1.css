@@ -328,7 +328,7 @@ prm-topbar {
 	position: relative;
 	top: -200px;
 	left: 10px;
-	max-width: 320px;
+	max-width: 300px;
 	width: auto;
 }
 
@@ -343,6 +343,10 @@ md-tooltip[ng-if="$ctrl.formSubmited"] {
 
 .shipItAddress .md-button {
 	border: 1px solid black;
+}
+
+.shipItAddress .layout-column {
+	flex: 1;
 }
 
 .tempAddressError {
