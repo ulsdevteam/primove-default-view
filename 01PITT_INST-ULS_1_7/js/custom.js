@@ -610,6 +610,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 		span.classList.add('reportProblemLink');
 		span.appendChild(reportProblem);
 		angular.element(document.getElementsByTagName('prm-search-result-availability-line'))[0].insertAdjacentElement('afterend', span);
+		angular.element(document.getElementsByClassName('reportProblemLink')[0]).bind('click',function(){window.location='https://library.pitt.edu/ask-email?referringUrl=' + window.location.href});
 	}
 	}).component('thirdIron', {
 		//Access grandparent scope
