@@ -128,6 +128,13 @@
 			});
 		}
 
+		function partialPaymentDialog() {
+			app.component('prmFinesAfter', { 
+				bindings: {parentCtrl: '<'}, 
+				template: '<partial-payment parent-ctrl="$ctrl.parentCtrl"></partial-payment>' 
+			});
+		}
+
 		function preload() {
 			for (var i = 0; i < arguments.length; i++) {
 				images[i] = new Image();
@@ -136,7 +143,7 @@
 		}
 
 		function privateSetup() {
-			app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron']);
+			app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron', 'authorizeNetPartialPayment']);
 			console.log("Executing custom JS.");
 
 			angular.element(function () {
@@ -147,6 +154,7 @@
 				newSearchSameTab();
 				thirdIron();
 				addressSelector();
+				partialPaymentDialog();
 				//hideGetItWithHathi();
 
 			});
@@ -616,4 +624,73 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 		require: {prmSearchResultAvailabilityLine:'^prmSearchResultAvailabilityLine'},
 		controller: 'thirdIronController',
   });
+
+  	// Partial payment form for fines & fees
+	angular.module('authorizeNetPartialPayment', ['ngMaterial'])
+		.constant('paymentServiceUrl', 'https://' + (location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-') + 'patron.libraries.pitt.edu/payment')
+		.controller('partialPaymentController', ['$scope', '$http', '$mdDialog', 'paymentServiceUrl', function ($scope, $http, $mdDialog, paymentServiceUrl) {
+			var self = this;
+			
+			//get logged-in user's authentication token from Primo
+			this.getJwt = function() {
+				var jwt = self.primoExplore.storageutil.sessionStorage.primoExploreJwt;
+				// strip quotes from jwt
+				if (jwt.charAt(0) === '"' && jwt.charAt(jwt.length - 1) === '"') {
+					jwt = jwt.slice(1, -1);
+				}
+				return jwt;
+			};
+
+			this.overrideLinks = function() {
+				var payFinesOverviewLink = angular.element(document.getElementsByTagName('prm-fines-overview')).find('a')[0];
+				var payFinesLink = angular.element(document.getElementsByTagName('prm-fines')).find('a')[0];
+				if (!payFinesOverviewLink || !payFinesLink) {
+					setTimeout(self.overrideLinks, 500);
+					return;
+				}
+				payFinesOverviewLink = angular.element(payFinesOverviewLink);
+				payFinesOverviewLink.removeAttr("href");
+				payFinesOverviewLink.attr("role", "button");
+				payFinesOverviewLink.on("click", self.openModal);
+				payFinesLink = angular.element(payFinesLink);
+				payFinesLink.removeAttr("href");
+				payFinesLink.attr("role", "button");
+				payFinesLink.on("click", self.openModal);
+			};
+
+			this.$postLink = function() {
+				self.overrideLinks();
+			};
+
+			this.openModal = function() {
+				let postUrl = paymentServiceUrl + '/?jwt=' + self.getJwt();
+				$mdDialog.show({
+					template: `
+					<div class="finesPaymentDialog form-focus layout-margin">
+						<h2 layout="row">Fine + Fee Payment</h2>
+						<h3 layout="row">Pay online</h3>
+						<form method="post" action="${postUrl}">
+							<div ng-repeat="fee in $ctrl.parentCtrl.finesService._finesDisplay" layout="column">
+								<strong layout="row">{{fee.firstLineLeft}}</strong>
+								<span layout="row">{{fee.secondLineLeft}}</span>
+								<div layout="row" layout-align="end center">
+									<label>{{fee.firstLineRight}}</label>
+									<input class="md-input" layout="row" type="text" name="fees[{{fee.fineid}}]" />
+								</div>
+							</div>
+							<input class="md-button md-raised" layout="row" layout-align="end center" type="submit" value="Pay Now" />
+						</form>
+					</div>`,
+					scope: $scope,
+					preserveScope: true,
+					clickOutsideToClose: true
+				});
+			};
+		}])
+		.component('partialPayment', {
+			require: { primoExplore: '^primoExplore' },
+			bindings: { parentCtrl: '<' },
+			controller: 'partialPaymentController',
+			template: ''
+		});
 })();
