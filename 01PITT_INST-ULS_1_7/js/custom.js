@@ -664,22 +664,40 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 
 			this.openModal = function() {
 				let postUrl = paymentServiceUrl + '/?jwt=' + self.getJwt();
+				$scope.hillmanFees = [];
+				$scope.otherFees = [];
+				for (let fee of self.parentCtrl.finesDisplay) {
+					let libraryName = fee.expandedDisplay.find(item => item.label == 'fines.fine_main_location').data;
+					if (libraryName == 'Hillman Library') {
+						$scope.hillmanFees.push(fee);
+					} else {
+						$scope.otherFees.push(fee);
+					}
+				}
 				$mdDialog.show({
 					template: `
 					<div class="finesPaymentDialog form-focus layout-margin">
 						<h2 layout="row">Fine + Fee Payment</h2>
-						<h3 layout="row">Pay online</h3>
-						<form method="post" action="${postUrl}">
-							<div ng-repeat="fee in $ctrl.parentCtrl.finesService._finesDisplay" layout="column">
+						<div style="margin: 15px">
+							<h3 layout="row">Pay online</h3>
+							<form class="clearfix" method="post" action="${postUrl}">
+								<div class="fees" ng-repeat="fee in hillmanFees" layout="column">
+									<strong layout="row">{{fee.firstLineLeft}}</strong>
+									<span layout="row">{{fee.secondLineLeft}}</span>
+									<div layout="row" layout-align="end center">
+										<label>{{fee.firstLineRight}}</label>
+										<input class="md-input" layout="row" type="number" name="fees[{{fee.fineid}}]" />
+									</div>
+								</div>
+								<input class="md-button md-raised" layout="row" type="submit" value="Pay Now" />
+							</form>
+							<h3 layout="row">Pay in person</h3>
+							<div class="fees" ng-repeat="fee in otherFees" layout="column">
 								<strong layout="row">{{fee.firstLineLeft}}</strong>
 								<span layout="row">{{fee.secondLineLeft}}</span>
-								<div layout="row" layout-align="end center">
-									<label>{{fee.firstLineRight}}</label>
-									<input class="md-input" layout="row" type="text" name="fees[{{fee.fineid}}]" />
-								</div>
+								<span layout="row" layout-align="end center">{{fee.firstLineRight}}</span>
 							</div>
-							<input class="md-button md-raised" layout="row" layout-align="end center" type="submit" value="Pay Now" />
-						</form>
+						</div>
 					</div>`,
 					scope: $scope,
 					preserveScope: true,
