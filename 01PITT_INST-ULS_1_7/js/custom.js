@@ -628,7 +628,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
   	// Partial payment form for fines & fees
 	angular.module('authorizeNetPartialPayment', ['ngMaterial'])
 		.constant('paymentServiceUrl', 'https://' + (location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-') + 'patron.libraries.pitt.edu/payment')
-		.controller('partialPaymentController', ['$scope', '$http', '$mdDialog', 'paymentServiceUrl', function ($scope, $http, $mdDialog, paymentServiceUrl) {
+		.controller('partialPaymentController', ['$scope', '$http', '$mdDialog', '$interpolate', 'paymentServiceUrl', function ($scope, $http, $mdDialog, $interpolate, paymentServiceUrl) {
 			var self = this;
 			
 			//get logged-in user's authentication token from Primo
@@ -662,8 +662,30 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 				self.overrideLinks();
 			};
 
-			this.openModal = function() {
+			$scope.submit = function() {
+				// TODO: client-side validation
+				// TODO: show spinner
 				let postUrl = paymentServiceUrl + '/?jwt=' + self.getJwt();
+				$http.post(postUrl, $scope.form, {
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json'
+					}
+				}).then(function(result) {
+					let form = angular.element($interpolate(`
+						<form action="{{url}}" method="post">
+							<input type="hidden" name="token" value="{{token}}" />
+						</form>
+					`)(result.data));
+					angular.element(document.getElementsByTagName('body')).append(form);
+					form[0].submit();
+				}, function(error) {
+					// TODO: show errors inline
+					alert(error.data);
+				});
+			};
+
+			this.openModal = function() {
 				$scope.hillmanFees = [];
 				$scope.otherFees = [];
 				for (let fee of self.parentCtrl.finesDisplay) {
@@ -674,19 +696,20 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 						$scope.otherFees.push(fee);
 					}
 				}
+				$scope.form = {fees: {}};
 				$mdDialog.show({
 					template: `
 					<div class="finesPaymentDialog form-focus layout-margin">
 						<h2 layout="row">Fine + Fee Payment</h2>
 						<div style="margin: 15px">
 							<h3 layout="row">Pay online</h3>
-							<form class="clearfix" method="post" action="${postUrl}">
+							<form class="clearfix" ng-submit="submit()">
 								<div class="fees" ng-repeat="fee in hillmanFees" layout="column">
 									<strong layout="row">{{fee.firstLineLeft}}</strong>
 									<span layout="row">{{fee.secondLineLeft}}</span>
 									<div layout="row" layout-align="end center">
 										<label>{{fee.firstLineRight}}</label>
-										<input class="md-input" layout="row" type="number" name="fees[{{fee.fineid}}]" />
+										<input class="md-input" layout="row" type="number" ng-model="form.fees[fee.fineid]" />
 									</div>
 								</div>
 								<input class="md-button md-raised" layout="row" type="submit" value="Pay Now" />
