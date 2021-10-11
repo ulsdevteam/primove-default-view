@@ -680,8 +680,11 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 					angular.element(document.getElementsByTagName('body')).append(form);
 					form[0].submit();
 				}, function(error) {
-					// TODO: show errors inline
-					alert(error.data);
+					if (typeof error === 'string') {
+						$scope.errors = { 'other' : error };
+					} else {
+						$scope.errors = error.data;
+					}
 				});
 			};
 
@@ -711,8 +714,10 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 										<label>{{fee.firstLineRight}}</label>
 										<input class="md-input" layout="row" type="number" ng-model="form.fees[fee.fineid]" />
 									</div>
+									<span layout="row" layout-align="end center" ngIf="errors[fee.fineid]" class="error">{{errors[fee.fineid]}}</span>
 								</div>
 								<input class="md-button md-raised" layout="row" type="submit" value="Pay Now" />
+								<span layout="row" ngIf="errors['other']" class="error">{{errors['other']}}</span>
 							</form>
 							<h3 layout="row">Pay in person</h3>
 							<div class="fees" ng-repeat="fee in otherFees" layout="column">
