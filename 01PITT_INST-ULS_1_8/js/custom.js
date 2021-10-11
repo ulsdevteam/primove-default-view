@@ -25,7 +25,6 @@
 		 *  Will also reset the aria label to be correct (if it's in English)
 		 */
 		function newSearchSameTab() {
-			console.log("Updating New Search tab.");
 			var newSearchLink = document.querySelector('[data-main-menu-item="NewSearch"] a');
 			if (newSearchLink) {
 				newSearchLink.removeAttribute("target");
