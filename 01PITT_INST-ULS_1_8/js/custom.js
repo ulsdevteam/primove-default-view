@@ -616,4 +616,12 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 		require: {prmSearchResultAvailabilityLine:'^prmSearchResultAvailabilityLine'},
 		controller: 'thirdIronController',
   });
+
+
+  // reShare button replacement
+	angular.module("reShareButton", []).controller("reShareButtonController", function($scope) {
+		console.log("Module executing.");
+	}).component("reShareButton", {
+
+	});
 })();
