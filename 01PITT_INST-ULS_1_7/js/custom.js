@@ -648,14 +648,10 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 					setTimeout(self.overrideLinks, 500);
 					return;
 				}
-				payFinesOverviewLink = angular.element(payFinesOverviewLink);
-				payFinesOverviewLink.removeAttr("href");
-				payFinesOverviewLink.attr("role", "button");
-				payFinesOverviewLink.on("click", self.openModal);
-				payFinesLink = angular.element(payFinesLink);
-				payFinesLink.removeAttr("href");
-				payFinesLink.attr("role", "button");
-				payFinesLink.on("click", self.openModal);
+				var links = angular.element([payFinesLink, payFinesOverviewLink]);
+				links.removeAttr("href");
+				links.attr("role", "button");
+				links.on("click", self.openModal);
 			};
 
 			this.$postLink = function() {
@@ -664,7 +660,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 
 			$scope.submit = function() {
 				// TODO: client-side validation
-				// TODO: show spinner
+				$scope.processing = true;
 				let postUrl = paymentServiceUrl + '/?jwt=' + self.getJwt();
 				$http.post(postUrl, $scope.form, {
 					headers: {
@@ -685,6 +681,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 					} else {
 						$scope.errors = error.data;
 					}
+					$scope.processing = false;
 				});
 			};
 
@@ -699,9 +696,12 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 						$scope.otherFees.push(fee);
 					}
 				}
-				$scope.form = {fees: {}};
+				$scope.form = { fees: {} };
+				$scope.processing = false;
+				$scope.errors = {};
 				$mdDialog.show({
 					template: `
+					<md-progress-linear class="header-progress-bar animation-scale-up-down" md-mode="indeterminate" ng-show="processing"></md-progress-linear>
 					<div class="finesPaymentDialog form-focus layout-margin">
 						<h2 layout="row">Fine + Fee Payment</h2>
 						<div style="margin: 15px">
@@ -716,8 +716,8 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 									</div>
 									<span layout="row" layout-align="end center" ngIf="errors[fee.fineid]" class="error">{{errors[fee.fineid]}}</span>
 								</div>
-								<input class="md-button md-raised" layout="row" type="submit" value="Pay Now" />
-								<span layout="row" ngIf="errors['other']" class="error">{{errors['other']}}</span>
+								<input ng-show="!processing" class="md-button md-raised" layout="row" type="submit" value="Pay Now" />
+								<span layout="row" ng-if="errors['other']" class="error">{{errors['other']}}</span>
 							</form>
 							<h3 layout="row">Pay in person</h3>
 							<div class="fees" ng-repeat="fee in otherFees" layout="column">
