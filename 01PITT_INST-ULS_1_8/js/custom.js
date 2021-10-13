@@ -25,7 +25,6 @@
 		 *  Will also reset the aria label to be correct (if it's in English)
 		 */
 		function newSearchSameTab() {
-			console.log("Updating New Search tab.");
 			var newSearchLink = document.querySelector('[data-main-menu-item="NewSearch"] a');
 			if (newSearchLink) {
 				newSearchLink.removeAttribute("target");
@@ -37,6 +36,75 @@
 				// this is terrible and I want to see if it works anyway.
 				setTimeout(newSearchSameTab, 500);
 			}
+		}
+
+		function reShareIntegrationButton() {
+			var expandButton = document.querySelector('div.sidebar-section > md-checkbox');
+			if (expandButton) {
+				if(!expandButton.classList.contains("uls-replaced")) {
+					// This replaces the "expand to non-Pitt resources" button with a cloned copy
+					// of the button that doesn't have any event handlers associated with it.
+					expandButton.parentNode.replaceChild(expandButton.cloneNode(1), expandButton);
+					// Turns out if you don't re-select the new clone you keep operating on the original.
+					// Which isn't there anymore.
+					expandButton = document.querySelector('div.sidebar-section > md-checkbox');
+					// Add a flag to the button so we know it's been replaced.
+					expandButton.classList.add("uls-replaced");
+					console.log("Expand [...] Resources button replaced.");
+
+					// Setup the event listeners
+					expandButton.addEventListener("click", function() {
+						// These changes have been reverse-engineered from
+						// the existing Angular code and are what happens
+						// when a checkbox is checked (or unchecked).
+
+						// Is this already checked? We can look at
+						// ng-empty (unchecked) vs. ng-not-empty (checked)
+						if(expandButton.classList.contains("ng-empty")) {
+							// checkbox is not yet checked
+
+							// remove class ng-empty
+							expandButton.classList.remove("ng-empty");
+							// add class ng-not-empty
+							expandButton.classList.add("ng-not-empty");
+							// add class md-checked
+							expandButton.classList.add("md-checked");
+							// change attribute aria-checked : set value to true
+							expandButton.setAttribute("aria-checked", true);
+
+							// Actual functionality goes here: change scope
+
+							// Store the previous value, just in case.
+							var window.uls.oldLocation = window.location;
+							// FIND: \&tab=[^&]+?(\&|$)				REPLACE: \&tab=LibraryCatalog
+							// FIND: \&search_scope=[^&]+?(\&|$)	REPLACE: \&search_scope=
+							//window.location = "";
+						} else {
+							// implies that the checkbox is currently checked
+
+							// remove class ng-not-empty
+							expandButton.classList.remove("ng-not-empty");
+							// remove class md-checked
+							expandButton.classList.remove("md-checked");
+							// add class ng-empty
+							expandButton.classList.add("ng-empty");
+							// change attribute aria-checked : set value to false
+							expandButton.setAttribute("aria-checked", false);
+
+							// Actual functionality goes here: change scope
+						}
+					});
+				} else {
+					// nothing to do here!
+				}
+			} 
+			/*
+				Setting this to just... run, periodically, so we can rebuild this button
+				whenever it gets regenerated. It's pretty awful, but it might be our best
+				option for now.
+			*/
+			// just because
+			setTimeout(reShareIntegrationButton, 500); 
 		}
 
 		/* libanswers chat widget 
@@ -148,6 +216,8 @@
 				thirdIron();
 				addressSelector();
 				//hideGetItWithHathi();
+				//reShareButton();
+				reShareIntegrationButton();
 
 			});
 
@@ -619,9 +689,10 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 
 
   // reShare button replacement
-	angular.module("reShareButton", []).controller("reShareButtonController", function($scope) {
-		console.log("Module executing.");
-	}).component("reShareButton", {
-
-	});
+	angular.module("reShareButton", []).controller("reShareButtonController", ['$scope', function($scope) {
+		console.log("Module executing in controller.");
+	}]).component();
 })();
+
+
+//prmBriefResultContainerAfter
