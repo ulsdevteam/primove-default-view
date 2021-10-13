@@ -375,6 +375,11 @@ color: red;
 	margin-right: 50px;
 }
 
+.finesPaymentDialog .md-input {
+	margin-left: 5px;
+	margin-bottom: 5px;
+}
+
 .finesPaymentDialog .error {
 	font-size: small;
 	font-weight: bold;
