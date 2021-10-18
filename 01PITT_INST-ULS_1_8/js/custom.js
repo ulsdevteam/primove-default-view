@@ -74,11 +74,44 @@
 
 							// Actual functionality goes here: change scope
 
+							/*
+								FIND: (?<=\&tab=)(?<tab>[^&#]+)(?=(?:\&|#|$))				REPLACE: \&tab=LibraryCatalog
+								FIND: \&search_scope=[^&]+?(\&|$)	REPLACE: \&search_scope=
+							
+								Breaking down the regex:
+									(?<=\&tab=)			Positive Lookbehind: we don't want to return the part of the match containing &tab=
+
+									(?<tab>[^&#]+)		Named capture group: this contains the value in the name-value pair, basically
+															everything after the equals sign. To grab that, we're doing a lazy match on
+															everything that's not an ampersand. This will run until it sees another ampersand,
+															signifying the start of another name/value pair; a hash/pound sign, signifying
+															the start of an anchor; or the end of the location string.
+
+															This will be stored as tab and can be referenced later.
+
+									(?=(?:\&|#|$))		Positive Lookahead (and a non-capturing group): We don't want to include the delimiter
+															in the match (the &, #, or $) but we want to make sure it's there, so we're running
+															a positive lookahead to confirm it. Because we have three options (which I've
+															separated out with pipes rather than a character set) I put those inside parens
+															to limit possible side-effects. Parens create capture groups so I made this a non-
+															capturing group just to keep our capture groups clean.
+							*/
+							var tabRegexMatch = new RegExp('(?<=\&tab=)(?:[^&#]+)(?=(?:\&|#|$))')
+							var tabRegexReplace = new RegExp('(?<=\&tab=)(?<tab>[^&#]+)(?=(?:\&|#|$))')
+							var scopeRegexMatch = new RegExp('(?<=\&search_scope=)(?:[^&#]+)(?=(?:\&|#|$))')
+							var scopeRegexReplace = new RegExp('(?<=\&search_scope=)(?<scope>[^&#]+)(?=(?:\&|#|$))')
+							console.log("Search Scope Regex = "+String(window.location).match(scopeRegexMatch));
+
 							// Store the previous value, just in case.
-							var window.uls.oldLocation = window.location;
-							// FIND: \&tab=[^&]+?(\&|$)				REPLACE: \&tab=LibraryCatalog
-							// FIND: \&search_scope=[^&]+?(\&|$)	REPLACE: \&search_scope=
-							//window.location = "";
+							console.log("Printing the value of window.uls to the console.");
+							console.log(window.uls);
+							
+							window.uls.previousLocation = window.location;
+							window.uls.previousLocation.tab = String(window.location).match(tabRegexMatch);
+							window.uls.previousLocation.search_scope = String(window.location).match(scopeRegexMatch);
+							window.uls.nextLocation = String(window.location).replace(tabRegexReplace, "???").replace(scopeRegexReplace, "???");
+							
+							//window.location = window.uls.nextLocation;
 						} else {
 							// implies that the checkbox is currently checked
 
@@ -204,6 +237,9 @@
 		}
 
 		function privateSetup() {
+			window.uls = {"version": 1.8};	// basically creating our own namespace here. It needs to have at
+											// least one value to be accessible globally.
+
 			app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron', 'reShareButton']);
 			console.log("Executing custom JS.");
 
