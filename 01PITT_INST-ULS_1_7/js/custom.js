@@ -627,7 +627,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 
   	// Partial payment form for fines & fees
 	angular.module('authorizeNetPartialPayment', ['ngMaterial'])
-		.constant('paymentServiceUrl', 'https://' + (location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-') + 'patron.libraries.pitt.edu/payment')
+		.constant('paymentServiceUrl', 'https://' + (location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-') + 'patron.libraries.pitt.edu/payment/')
 		.controller('partialPaymentController', ['$scope', '$http', '$mdDialog', '$interpolate', 'paymentServiceUrl', function ($scope, $http, $mdDialog, $interpolate, paymentServiceUrl) {
 			var self = this;
 			
@@ -661,7 +661,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 			$scope.submit = function() {
 				// TODO: client-side validation
 				$scope.processing = true;
-				let postUrl = paymentServiceUrl + '/?jwt=' + self.getJwt();
+				let postUrl = paymentServiceUrl + '?jwt=' + self.getJwt();
 				$http.post(postUrl, $scope.form, {
 					headers: {
 						'Accept': 'application/json',
@@ -686,50 +686,54 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 			};
 
 			this.openModal = function() {
-				$scope.hillmanFees = [];
-				$scope.otherFees = [];
-				for (let fee of self.parentCtrl.finesDisplay) {
-					let libraryName = fee.expandedDisplay.find(item => item.label == 'fines.fine_main_location').data;
-					if (libraryName == 'Hillman Library') {
-						$scope.hillmanFees.push(fee);
-					} else {
-						$scope.otherFees.push(fee);
+				let allowedLibrariesUrl = paymentServiceUrl + 'allowed_libraries.php?jwt=' + self.getJwt();
+				$http.get(allowedLibrariesUrl).then(function(result) {
+					let allowedLibraryNames = result.data.map(library => library.name);
+					$scope.allowedFees = [];
+					$scope.excludedFees = [];
+					for (let fee of self.parentCtrl.finesDisplay) {
+						let libraryName = fee.expandedDisplay.find(item => item.label == 'fines.fine_main_location').data;
+						if (allowedLibraryNames.includes(libraryName)) {
+							$scope.allowedFees.push(fee);
+						} else {
+							$scope.excludedFees.push(fee);
+						}
 					}
-				}
-				$scope.form = { fees: {} };
-				$scope.processing = false;
-				$scope.errors = {};
-				$mdDialog.show({
-					template: `
-					<md-progress-linear class="header-progress-bar animation-scale-up-down" md-mode="indeterminate" ng-show="processing"></md-progress-linear>
-					<div class="finesPaymentDialog form-focus layout-margin">
-						<h2 layout="row">Fine + Fee Payment</h2>
-						<div style="margin: 15px">
-							<h3 layout="row">Pay online</h3>
-							<form class="clearfix" ng-submit="submit()">
-								<div class="fees" ng-repeat="fee in hillmanFees" layout="column">
+					$scope.form = { fees: {} };
+					$scope.processing = false;
+					$scope.errors = {};
+					$mdDialog.show({
+						template: `
+						<md-progress-linear class="header-progress-bar animation-scale-up-down" md-mode="indeterminate" ng-show="processing"></md-progress-linear>
+						<div class="finesPaymentDialog form-focus layout-margin">
+							<h2 layout="row">Fine + Fee Payment</h2>
+							<div style="margin: 15px">
+								<h3 layout="row">Pay online</h3>
+								<form class="clearfix" ng-submit="submit()">
+									<div class="fees" ng-repeat="fee in allowedFees" layout="column">
+										<strong layout="row">{{fee.firstLineLeft}}</strong>
+										<span layout="row">{{fee.secondLineLeft}}</span>
+										<div layout="row" layout-align="end center">
+											<label>{{fee.firstLineRight}}</label>
+											<input class="md-input" layout="row" type="number" ng-model="form.fees[fee.fineid]" />
+										</div>
+										<span layout="row" layout-align="end center" ngIf="errors[fee.fineid]" class="error">{{errors[fee.fineid]}}</span>
+									</div>
+									<input ng-show="!processing" class="md-button md-raised" layout="row" type="submit" value="Pay Now" />
+									<span layout="row" ng-if="errors['other']" class="error">{{errors['other']}}</span>
+								</form>
+								<h3 layout="row">Pay in person</h3>
+								<div class="fees" ng-repeat="fee in excludedFees" layout="column">
 									<strong layout="row">{{fee.firstLineLeft}}</strong>
 									<span layout="row">{{fee.secondLineLeft}}</span>
-									<div layout="row" layout-align="end center">
-										<label>{{fee.firstLineRight}}</label>
-										<input class="md-input" layout="row" type="number" ng-model="form.fees[fee.fineid]" />
-									</div>
-									<span layout="row" layout-align="end center" ngIf="errors[fee.fineid]" class="error">{{errors[fee.fineid]}}</span>
+									<span layout="row" layout-align="end center">{{fee.firstLineRight}}</span>
 								</div>
-								<input ng-show="!processing" class="md-button md-raised" layout="row" type="submit" value="Pay Now" />
-								<span layout="row" ng-if="errors['other']" class="error">{{errors['other']}}</span>
-							</form>
-							<h3 layout="row">Pay in person</h3>
-							<div class="fees" ng-repeat="fee in otherFees" layout="column">
-								<strong layout="row">{{fee.firstLineLeft}}</strong>
-								<span layout="row">{{fee.secondLineLeft}}</span>
-								<span layout="row" layout-align="end center">{{fee.firstLineRight}}</span>
 							</div>
-						</div>
-					</div>`,
-					scope: $scope,
-					preserveScope: true,
-					clickOutsideToClose: true
+						</div>`,
+						scope: $scope,
+						preserveScope: true,
+						clickOutsideToClose: true
+					});
 				});
 			};
 		}])
