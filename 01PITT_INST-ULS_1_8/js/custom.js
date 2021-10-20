@@ -83,10 +83,11 @@
 				FIND: (?<=\&search_scope=)(?<scope>[^&#]+)(?=(?:\&|#|$))	REPLACE: \&search_scope=
 			
 				Breaking down the regex:
-					(?<=\&tab=)			Positive Lookbehind: we don't want to return the part of the match containing &tab=
+					(?<=\&tab=)			Positive Lookbehind: we want to "match" on "&tab=", but it's not the part we want to change,
+											and we don't want to return it as part of the "official" match.
 
 					(?<tab>[^&#]+)		Named capture group: this contains the value in the name-value pair, basically
-											everything after the equals sign. To grab that, we're doing a lazy match on
+											everything after the equals sign. To grab that, we're doing a match on
 											everything that's not an ampersand. This will run until it sees another ampersand,
 											signifying the start of another name/value pair; a hash/pound sign, signifying
 											the start of an anchor; or the end of the location string.
@@ -131,19 +132,17 @@
 							checkAngularCheckbox(this);
 
 							// Change Scope
-							// Setting window.location changes the angular context, but it DOES force basically a full reload...
+							// Setting window.location changes the angular context doesn't seem to force a full reload, nifty
 							window.location = String(window.location).replace(tabRegexReplace, "WorldCatPlus").replace(scopeRegexReplace, "WORLDCATPLUS");
 						} else {
 							// implies that the checkbox is currently checked
 							uncheckAngularCheckbox(this);
 
 							// Change Scope
-							// Setting window.location changes the angular context, but it DOES force basically a full reload...
+							// Setting window.location changes the angular context doesn't seem to force a full reload, nifty
 							window.location = String(window.location).replace(tabRegexReplace, "Everything").replace(scopeRegexReplace, "MyInst_and_CI");
 						}
 					});
-				} else {
-					// nothing to do here!
 				}
 			} 
 			/*
@@ -151,12 +150,15 @@
 				whenever it gets regenerated. It's pretty awful, but it might be our best
 				option for now.
 			*/
-			// just because
 			setTimeout(reShareIntegrationButton, 500); 
 		}
 
 		/*
-		 * Checking a checkbox if we're in the right scope
+		 * checkBoxIfInReshareScope
+		 * 
+		 * When we manually change scopes, we force a rebuild of the existing checkboxes. (And
+		 * everything else on the page, almost!) So we need to have something run that is checking
+		 * to see if the unchecked checkbox pops back up, and if it does, make sure it gets checked!
 		 */
 		function checkBoxIfInReshareScope() {
 			// Bad bad bad practice! Reused code. See description in reShareIntegrationButton().
@@ -171,11 +173,9 @@
 				// aria-labels and text content.
 				if(expandButton.hasAttribute("aria-label") && String(window.location).match(scopeRegexMatch) == primoReShareScope && expandButton.classList.contains("ng-empty")) {
 					// We're in the ReShare Scope, and the checkbox isn't checked.
-					// Add test for race condition here?
 					checkAngularCheckbox(expandButton);
 				}
 			}
-			// just because
 			setTimeout(checkBoxIfInReshareScope, 250); 
 		}
 
