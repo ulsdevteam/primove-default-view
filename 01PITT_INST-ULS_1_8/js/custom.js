@@ -276,10 +276,7 @@
 		}
 
 		function privateSetup() {
-			window.uls = {"version": 1.8};	// basically creating our own namespace here. It needs to have at
-											// least one value to be accessible globally.
-
-			app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron', 'reShareButton']);
+			app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron']);
 			console.log("Executing custom JS.");
 
 			angular.element(function () {
@@ -764,10 +761,6 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
   });
 
 
-  // reShare button replacement
-	angular.module("reShareButton", []).controller("reShareButtonController", ['$scope', function($scope) {
-		console.log("Module executing in controller.");
-	}]).component();
 })();
 
 
