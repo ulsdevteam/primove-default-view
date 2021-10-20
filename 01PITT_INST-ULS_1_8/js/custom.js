@@ -107,7 +107,11 @@
 
 			var expandButton = document.querySelector('div.sidebar-section > md-checkbox');
 			if (expandButton) {
-				if(!expandButton.classList.contains("uls-replaced")) {
+				// Trying to avoid a race condition with the process that fills buttons with translations
+				// Primo seems to build out the DOM, and then iterate through each item and add
+				// aria-labels and text content. And we'll join that with the check to see if we haven't
+				// already replaced the button.
+				if(expandButton.hasAttribute("aria-label") && !expandButton.classList.contains("uls-replaced")) {
 					// This replaces the "expand to non-Pitt resources" button with a cloned copy
 					// of the button that doesn't have any event handlers associated with it.
 					expandButton.parentNode.replaceChild(expandButton.cloneNode(1), expandButton);
@@ -161,7 +165,11 @@
 			var primoReShareScope = "WORLDCATPLUS";
 			if (expandButton) {
 				// Breaking up the if-statements to avoid null references
-				if(String(window.location).match(scopeRegexMatch) == primoReShareScope && expandButton.classList.contains("ng-empty")) {
+
+				// Trying to avoid a race condition with the process that fills buttons with translations
+				// Primo seems to build out the DOM, and then iterate through each item and add
+				// aria-labels and text content.
+				if(expandButton.hasAttribute("aria-label") && String(window.location).match(scopeRegexMatch) == primoReShareScope && expandButton.classList.contains("ng-empty")) {
 					// We're in the ReShare Scope, and the checkbox isn't checked.
 					// Add test for race condition here?
 					checkAngularCheckbox(expandButton);
