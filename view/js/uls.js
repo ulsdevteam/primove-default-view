@@ -3,6 +3,7 @@
 import { newSearchSameTab } from "./uls-newSearchSameTab.js";
 import { chatWidget } from "./uls-libAnswersChatWidget.js";
 import { addGoogleAnalytics } from "./uls-addGoogleAnalytics.js";
+import { checkBoxIfInReshareScope, reShareIntegrationButton } from "./uls-reShareIntegrationButton.js"
 
 (function () {
 	"use strict";
@@ -101,6 +102,7 @@ import { addGoogleAnalytics } from "./uls-addGoogleAnalytics.js";
 
 			angular.element(function () {
 				console.log('page loading completed');
+				checkBoxIfInReshareScope();
 				addGoogleAnalytics();
 				prmSearchResultAvailabilityLineAfterTemplate();
 				chatWidget();
@@ -108,6 +110,8 @@ import { addGoogleAnalytics } from "./uls-addGoogleAnalytics.js";
 				thirdIron();
 				addressSelector();
 				//hideGetItWithHathi();
+				//reShareButton();
+				reShareIntegrationButton();
 
 			});
 
@@ -576,4 +580,9 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 		require: {prmSearchResultAvailabilityLine:'^prmSearchResultAvailabilityLine'},
 		controller: 'thirdIronController',
   });
+
+
 })();
+
+
+//prmBriefResultContainerAfter
