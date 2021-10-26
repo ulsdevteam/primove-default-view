@@ -79,6 +79,9 @@
 		 */
 		function reShareIntegrationButton() {
 			/*
+				This should probably be replaced with an implementation using one of the location objects. Whether we
+				can do this, and how we implement it, will depend on whether we want to keep supporting IE.
+
 				FIND: (?<=\&tab=)(?<tab>[^&#]+)(?=(?:\&|#|$))				REPLACE: \&tab=LibraryCatalog
 				FIND: (?<=\&search_scope=)(?<scope>[^&#]+)(?=(?:\&|#|$))	REPLACE: \&search_scope=
 			
@@ -101,9 +104,7 @@
 											to limit possible side-effects. Parens create capture groups so I made this a non-
 											capturing group just to keep our capture groups clean.
 			*/
-			var tabRegexMatch = new RegExp('(?<=\&tab=)(?:[^&#]+)(?=(?:\&|#|$))')
 			var tabRegexReplace = new RegExp('(?<=\&tab=)(?<tab>[^&#]+)(?=(?:\&|#|$))')
-			var scopeRegexMatch = new RegExp('(?<=\&search_scope=)(?:[^&#]+)(?=(?:\&|#|$))')
 			var scopeRegexReplace = new RegExp('(?<=\&search_scope=)(?<scope>[^&#]+)(?=(?:\&|#|$))')
 
 			var expandButton = document.querySelector('div.sidebar-section > md-checkbox');
@@ -161,7 +162,7 @@
 		 * to see if the unchecked checkbox pops back up, and if it does, make sure it gets checked!
 		 */
 		function checkBoxIfInReshareScope() {
-			// Bad bad bad practice! Reused code. See description in reShareIntegrationButton().
+			// Bad bad bad practice! Reused code. Closely related to regular expressions in reShareIntegrationButton().
 			var scopeRegexMatch = new RegExp('(?<=\&search_scope=)(?:[^&#]+)(?=(?:\&|#|$))')
 			var expandButton = document.querySelector('div.sidebar-section > md-checkbox');
 			var primoReShareScope = "WORLDCATPLUS";
