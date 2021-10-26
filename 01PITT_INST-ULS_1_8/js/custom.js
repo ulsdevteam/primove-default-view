@@ -171,8 +171,12 @@
 
 				// Trying to avoid a race condition with the process that fills buttons with translations
 				// Primo seems to build out the DOM, and then iterate through each item and add
-				// aria-labels and text content.
-				if (expandButton.hasAttribute("aria-label") && String(window.location).match(scopeRegexMatch) == primoReShareScope && expandButton.classList.contains("ng-empty")) {
+				// aria-labels and text content. We're replacing the check of the aria-label attribute with
+				// a check of the uls-replaced class to try to limit the possibility of ANOTHER race
+				// condition, where we might start cloning the button and then attempt to check the button
+				// during the copy. We shouldn't add the uls-replaced class until after the aria-label
+				// attribute exists, so we should get a 2-for-1 deal on our validation this way.
+				if (expandButton.classList.contains("uls-replaced") && String(window.location).match(scopeRegexMatch) == primoReShareScope && expandButton.classList.contains("ng-empty")) {
 					// We're in the ReShare Scope, and the checkbox isn't checked.
 					checkAngularCheckbox(expandButton);
 				}
