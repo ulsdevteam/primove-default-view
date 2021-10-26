@@ -112,7 +112,7 @@
 				// Primo seems to build out the DOM, and then iterate through each item and add
 				// aria-labels and text content. And we'll join that with the check to see if we haven't
 				// already replaced the button.
-				if(expandButton.hasAttribute("aria-label") && !expandButton.classList.contains("uls-replaced")) {
+				if (expandButton.hasAttribute("aria-label") && !expandButton.classList.contains("uls-replaced")) {
 					// This replaces the "expand to non-Pitt resources" button with a cloned copy
 					// of the button that doesn't have any event handlers associated with it.
 					expandButton.parentNode.replaceChild(expandButton.cloneNode(1), expandButton);
@@ -127,7 +127,7 @@
 					expandButton.addEventListener("click", function() {
 						// Is this already checked? We can look at
 						// ng-empty (unchecked) vs. ng-not-empty (checked)
-						if(expandButton.classList.contains("ng-empty")) {
+						if (expandButton.classList.contains("ng-empty")) {
 							// checkbox is not yet checked
 							checkAngularCheckbox(this);
 
@@ -171,7 +171,7 @@
 				// Trying to avoid a race condition with the process that fills buttons with translations
 				// Primo seems to build out the DOM, and then iterate through each item and add
 				// aria-labels and text content.
-				if(expandButton.hasAttribute("aria-label") && String(window.location).match(scopeRegexMatch) == primoReShareScope && expandButton.classList.contains("ng-empty")) {
+				if (expandButton.hasAttribute("aria-label") && String(window.location).match(scopeRegexMatch) == primoReShareScope && expandButton.classList.contains("ng-empty")) {
 					// We're in the ReShare Scope, and the checkbox isn't checked.
 					checkAngularCheckbox(expandButton);
 				}
