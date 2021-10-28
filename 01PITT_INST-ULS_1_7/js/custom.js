@@ -708,8 +708,8 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 						<div class="finesPaymentDialog form-focus layout-margin">
 							<h2 layout="row">Fine + Fee Payment</h2>
 							<div style="margin: 15px">
-								<h3 layout="row">Pay online</h3>
-								<form class="clearfix" ng-submit="submit()">
+								<h3 ng-if="allowedFees.length > 0" layout="row">Pay online</h3>
+								<form ng-if="allowedFees.length > 0" class="clearfix" ng-submit="submit()">
 									<div class="fees" ng-repeat="fee in allowedFees" layout="column">
 										<strong layout="row">{{fee.firstLineLeft}}</strong>
 										<span layout="row">{{fee.secondLineLeft}}</span>
@@ -722,12 +722,13 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 									<input ng-show="!processing" class="md-button md-raised" layout="row" type="submit" value="Pay Now" />
 									<span layout="row" ng-if="errors['other']" class="error">{{errors['other']}}</span>
 								</form>
-								<h3 layout="row">Pay in person</h3>
+								<h3 ng-if="excludedFees.length > 0" layout="row">Pay in person</h3>
 								<div class="fees" ng-repeat="fee in excludedFees" layout="column">
 									<strong layout="row">{{fee.firstLineLeft}}</strong>
 									<span layout="row">{{fee.secondLineLeft}}</span>
 									<span layout="row" layout-align="end center">{{fee.firstLineRight}}</span>
 								</div>
+								<span ng-if="allowedFees.length == 0 && excludedFees.length == 0">You currently have no outstanding fines or fees.</span>
 							</div>
 						</div>`,
 						scope: $scope,
