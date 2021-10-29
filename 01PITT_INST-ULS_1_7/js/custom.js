@@ -699,7 +699,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 							$scope.excludedFees.push(fee);
 						}
 					}
-					$scope.form = { fees: {} };
+					$scope.form = { fees: {}, paymentSettings: 'primo' };
 					$scope.processing = false;
 					$scope.errors = {};
 					$mdDialog.show({
