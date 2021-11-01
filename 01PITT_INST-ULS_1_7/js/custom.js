@@ -642,24 +642,26 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 			};
 
 			this.overrideLinks = function() {
+				// there are two "Pay Fines" links, one in the account overview and one on the fines & fees tab
 				var payFinesOverviewLink = angular.element(document.getElementsByTagName('prm-fines-overview')).find('a')[0];
 				var payFinesLink = angular.element(document.getElementsByTagName('prm-fines')).find('a')[0];
 				if (!payFinesOverviewLink || !payFinesLink) {
+					// when this controller is initialized, these links aren't populated yet, so wait until they both are
 					setTimeout(self.overrideLinks, 500);
 					return;
 				}
+				// remove the href from the links, and instead make them open a dialog
 				var links = angular.element([payFinesLink, payFinesOverviewLink]);
 				links.removeAttr("href");
 				links.attr("role", "button");
 				links.on("click", self.openModal);
 			};
 
-			this.$postLink = function() {
+			this.$onInit = function() {
 				self.overrideLinks();
 			};
 
 			$scope.submit = function() {
-				// TODO: client-side validation
 				$scope.processing = true;
 				let postUrl = paymentServiceUrl + '?jwt=' + self.getJwt();
 				$http.post(postUrl, $scope.form, {
@@ -668,6 +670,8 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 						'Content-Type': 'application/json'
 					}
 				}).then(function(result) {
+					// call returns the auth.net payment url, and a token representing the payment options
+					// to show the form, we need to make a post to that url with the token in the post body
 					let form = angular.element($interpolate(`
 						<form action="{{url}}" method="post">
 							<input type="hidden" name="token" value="{{token}}" />
@@ -676,6 +680,9 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 					angular.element(document.getElementsByTagName('body')).append(form);
 					form[0].submit();
 				}, function(error) {
+					// if there are errors with individual fees, they will be returned in a json object where the keys are the fee ids
+					// there may also be a key that is the string 'other' for errors not associated with a specific fee
+					// or there could be another kind of error that is just returned as a string, in which case we treat it as an 'other' error
 					if (typeof error === 'string') {
 						$scope.errors = { 'other' : error };
 					} else {
