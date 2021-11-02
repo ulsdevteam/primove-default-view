@@ -1,10 +1,16 @@
 #!/bin/bash
 
-# just a quick thing to rebuild the zip file. Update the paths as needed.
+# just a quick thing to rebuild the zip file.
+source build_config
 
+# create a temporary directory
+cp -R ./view/ ./$NAME
+
+# build a zip file
 printf "\nRebuilding zip file.\n"
-
-rm 01PITT_INST-ULS_1_7_2.zip
-zip -r 01PITT_INST-ULS_1_7_2.zip 01PITT_INST-ULS_1_7_2/
-
+rm ${NAME}.zip
+zip -r ${NAME}.zip ./${NAME}/
 printf "\nRebuild complete.\n"
+
+# remove the temporary directory
+rm -R ./${NAME}/
