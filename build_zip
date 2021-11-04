@@ -16,4 +16,6 @@ if [ "$NAME" != "" -a ! -e "$NAME" ] ; then
 
 	# remove the temporary directory
 	rm -R ./${NAME}/
+else
+	echo "Error: the temporary directory we want to create already exists."
 fi
