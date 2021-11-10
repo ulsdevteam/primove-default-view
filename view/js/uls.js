@@ -588,8 +588,8 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 		require: {prmSearchResultAvailabilityLine:'^prmSearchResultAvailabilityLine'},
 		controller: 'thirdIronController',
   });
-  
-	// Partial payment form for fines & fees
+
+  	// Partial payment form for fines & fees
 	angular.module('authorizeNetPartialPayment', ['ngMaterial'])
 		.constant('paymentServiceUrl', 'https://' + (location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-') + 'patron.libraries.pitt.edu/payment/')
 		.controller('partialPaymentController', ['$scope', '$http', '$mdDialog', '$interpolate', 'paymentServiceUrl', function ($scope, $http, $mdDialog, $interpolate, paymentServiceUrl) {
@@ -611,7 +611,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 				var payFinesLink = angular.element(document.getElementsByTagName('prm-fines')).find('a')[0];
 				if (!payFinesOverviewLink || !payFinesLink) {
 					// when this controller is initialized, these links aren't populated yet, so wait until they both are
-					setTimeout(self.overrideLinks, 500);
+					setTimeout(self.overrideLinks, 50);
 					return;
 				}
 				// remove the href from the links, and instead make them open a dialog
@@ -659,12 +659,20 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 			this.openModal = function() {
 				let allowedLibrariesUrl = paymentServiceUrl + 'allowed_libraries.php?jwt=' + self.getJwt();
 				$http.get(allowedLibrariesUrl).then(function(result) {
-					let allowedLibraryNames = result.data.map(library => library.name);
+					let allowInstitutionFees = result.data.allowInstitutionFees;
+					let allowedLibraryNames = result.data.libraries.map(library => library.name);
 					$scope.allowedFees = [];
 					$scope.excludedFees = [];
 					for (let fee of self.parentCtrl.finesDisplay) {
-						let libraryName = fee.expandedDisplay.find(item => item.label == 'fines.fine_main_location').data;
-						if (allowedLibraryNames.includes(libraryName)) {
+						let libraryName = fee.expandedDisplay.find(item => item.label == 'fines.fine_main_location')?.data;
+						if (!libraryName) {
+							if (allowInstitutionFees) {
+								$scope.allowedFees.push(fee);
+							} else {
+								$scope.excludedFees.push(fee);
+							}
+						}
+						else if (allowedLibraryNames.includes(libraryName)) {
 							$scope.allowedFees.push(fee);
 						} else {
 							$scope.excludedFees.push(fee);
@@ -686,7 +694,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 										<span layout="row">{{fee.secondLineLeft}}</span>
 										<div layout="row" layout-align="end center">
 											<label>{{fee.firstLineRight}}</label>
-											<input class="md-input" layout="row" type="number" ng-model="form.fees[fee.fineid]" />
+											<input class="md-input" layout="row" ng-model="form.fees[fee.fineid]" />
 										</div>
 										<span layout="row" layout-align="end center" ngIf="errors[fee.fineid]" class="error">{{errors[fee.fineid]}}</span>
 									</div>
@@ -715,6 +723,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 			controller: 'partialPaymentController',
 			template: ''
 		});
+})();
 
 })();
 
