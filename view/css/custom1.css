@@ -374,36 +374,8 @@ div.md-datepicker-calendar-pane {
 	margin: 0px;
 }
 
-.finesPaymentDialog .md-button {
-	float: right;
-	margin-right: 50px;
-}
-
-.finesPaymentDialog .md-input {
-	margin-left: 5px;
-	margin-bottom: 5px;
-}
-
 .finesPaymentDialog .error {
 	font-size: small;
 	font-weight: bold;
 	color: red;
-}
-
-.finesPaymentDialog .clearfix::after {
-	content: "";
-	clear: both;
-	display: table;
-}
-
-/* Chrome, Safari, Edge, Opera */
-.finesPaymentDialog input::-webkit-outer-spin-button,
-.finesPaymentDialog input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-.finesPaymentDialog input[type=number] {
-  -moz-appearance: textfield;
 }

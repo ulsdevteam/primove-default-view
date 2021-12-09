@@ -590,139 +590,181 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
   });
 
   	// Partial payment form for fines & fees
-	angular.module('authorizeNetPartialPayment', ['ngMaterial'])
-		.constant('paymentServiceUrl', 'https://' + (location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-') + 'patron.libraries.pitt.edu/payment/')
-		.controller('partialPaymentController', ['$scope', '$http', '$mdDialog', '$interpolate', 'paymentServiceUrl', function ($scope, $http, $mdDialog, $interpolate, paymentServiceUrl) {
-			var self = this;
-			
-			//get logged-in user's authentication token from Primo
-			this.getJwt = function() {
-				var jwt = self.primoExplore.storageutil.sessionStorage.primoExploreJwt;
-				// strip quotes from jwt
-				if (jwt.charAt(0) === '"' && jwt.charAt(jwt.length - 1) === '"') {
-					jwt = jwt.slice(1, -1);
-				}
-				return jwt;
-			};
+	  angular.module('authorizeNetPartialPayment', ['ngMaterial'])
+	  .constant('paymentServiceUrl', 'https://' + (location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-') + 'patron.libraries.pitt.edu/payment/')
+	  .controller('partialPaymentController', ['$scope', '$http', '$mdDialog', '$interpolate', 'paymentServiceUrl', function ($scope, $http, $mdDialog, $interpolate, paymentServiceUrl) {
+		  var self = this;
+		  
+		  //get logged-in user's authentication token from Primo
+		  this.getJwt = function() {
+			  var jwt = self.primoExplore.storageutil.sessionStorage.primoExploreJwt;
+			  // strip quotes from jwt
+			  if (jwt.charAt(0) === '"' && jwt.charAt(jwt.length - 1) === '"') {
+				  jwt = jwt.slice(1, -1);
+			  }
+			  return jwt;
+		  };
 
-			this.overrideLinks = function() {
-				// there are two "Pay Fines" links, one in the account overview and one on the fines & fees tab
-				var payFinesOverviewLink = angular.element(document.getElementsByTagName('prm-fines-overview')).find('a')[0];
-				var payFinesLink = angular.element(document.getElementsByTagName('prm-fines')).find('a')[0];
-				if (!payFinesOverviewLink || !payFinesLink) {
-					// when this controller is initialized, these links aren't populated yet, so wait until they both are
-					setTimeout(self.overrideLinks, 50);
-					return;
-				}
-				// remove the href from the links, and instead make them open a dialog
-				var links = angular.element([payFinesLink, payFinesOverviewLink]);
-				links.removeAttr("href");
-				links.attr("role", "button");
-				links.on("click", self.openModal);
-			};
+		  this.overrideLinks = function() {
+			  // there are two "Pay Fines" links, one in the account overview and one on the fines & fees tab
+			  var payFinesOverviewLink = angular.element(document.getElementsByTagName('prm-fines-overview')).find('a')[0];
+			  var payFinesLink = angular.element(document.getElementsByTagName('prm-fines')).find('a')[0];
+			  if (!payFinesOverviewLink || !payFinesLink) {
+				  // when this controller is initialized, these links aren't populated yet, so wait until they both are
+				  setTimeout(self.overrideLinks, 50);
+				  return;
+			  }
+			  // remove the href from the links, and instead make them open a dialog
+			  var links = angular.element([payFinesLink, payFinesOverviewLink]);
+			  links.removeAttr("href");
+			  links.attr("role", "button");
+			  links.on("click", self.openModal);
+		  };
 
-			this.$onInit = function() {
-				self.overrideLinks();
-			};
+		  this.$onInit = function() {
+			  self.overrideLinks();
+		  };
 
-			$scope.submit = function() {
-				$scope.processing = true;
-				let postUrl = paymentServiceUrl + '?jwt=' + self.getJwt();
-				$http.post(postUrl, $scope.form, {
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					}
-				}).then(function(result) {
-					// call returns the auth.net payment url, and a token representing the payment options
-					// to show the form, we need to make a post to that url with the token in the post body
-					let form = angular.element($interpolate(`
-						<form action="{{url}}" method="post">
-							<input type="hidden" name="token" value="{{token}}" />
-						</form>
-					`)(result.data));
-					angular.element(document.getElementsByTagName('body')).append(form);
-					form[0].submit();
-				}, function(error) {
-					// if there are errors with individual fees, they will be returned in a json object where the keys are the fee ids
-					// there may also be a key that is the string 'other' for errors not associated with a specific fee
-					// or there could be another kind of error that is just returned as a string, in which case we treat it as an 'other' error
-					if (typeof error === 'string') {
-						$scope.errors = { 'other' : error };
-					} else {
-						$scope.errors = error.data;
-					}
-					$scope.processing = false;
-				});
-			};
+		  $scope.toggleForm = function() {
+			  $scope.payIndividualFees = !$scope.payIndividualFees;
+			  $scope.initializeForm();
+		  }
 
-			this.openModal = function() {
-				let allowedLibrariesUrl = paymentServiceUrl + 'allowed_libraries.php?jwt=' + self.getJwt();
-				$http.get(allowedLibrariesUrl).then(function(result) {
-					let allowInstitutionFees = result.data.allowInstitutionFees;
-					let allowedLibraryNames = result.data.libraries.map(library => library.name);
-					$scope.allowedFees = [];
-					$scope.excludedFees = [];
-					for (let fee of self.parentCtrl.finesDisplay) {
-						let libraryName = fee.expandedDisplay.find(item => item.label == 'fines.fine_main_location')?.data;
-						if (!libraryName) {
-							if (allowInstitutionFees) {
-								$scope.allowedFees.push(fee);
-							} else {
-								$scope.excludedFees.push(fee);
-							}
-						}
-						else if (allowedLibraryNames.includes(libraryName)) {
-							$scope.allowedFees.push(fee);
-						} else {
-							$scope.excludedFees.push(fee);
-						}
-					}
-					$scope.form = { fees: {}, paymentSettings: 'primo' };
-					$scope.processing = false;
-					$scope.errors = {};
-					$mdDialog.show({
-						template: `
-						<md-progress-linear class="header-progress-bar animation-scale-up-down" md-mode="indeterminate" ng-show="processing"></md-progress-linear>
-						<div class="finesPaymentDialog form-focus layout-margin">
-							<h2 layout="row">Fine + Fee Payment</h2>
-							<div style="margin: 15px">
-								<h3 ng-if="allowedFees.length > 0" layout="row">Pay online</h3>
-								<form ng-if="allowedFees.length > 0" class="clearfix" ng-submit="submit()">
-									<div class="fees" ng-repeat="fee in allowedFees" layout="column">
-										<strong layout="row">{{fee.firstLineLeft}}</strong>
-										<span layout="row">{{fee.secondLineLeft}}</span>
-										<div layout="row" layout-align="end center">
-											<label>{{fee.firstLineRight}}</label>
-											<input class="md-input" layout="row" ng-model="form.fees[fee.fineid]" />
-										</div>
-										<span layout="row" layout-align="end center" ngIf="errors[fee.fineid]" class="error">{{errors[fee.fineid]}}</span>
-									</div>
-									<input ng-show="!processing" class="md-button md-raised" layout="row" type="submit" value="Pay Now" />
-									<span layout="row" ng-if="errors['other']" class="error">{{errors['other']}}</span>
-								</form>
-								<h3 ng-if="excludedFees.length > 0" layout="row">Pay in person</h3>
-								<div class="fees" ng-repeat="fee in excludedFees" layout="column">
-									<strong layout="row">{{fee.firstLineLeft}}</strong>
-									<span layout="row">{{fee.secondLineLeft}}</span>
-									<span layout="row" layout-align="end center">{{fee.firstLineRight}}</span>
-								</div>
-								<span ng-if="allowedFees.length == 0 && excludedFees.length == 0">You currently have no outstanding fines or fees.</span>
-							</div>
-						</div>`,
-						scope: $scope,
-						preserveScope: true,
-						clickOutsideToClose: true
-					});
-				});
-			};
-		}])
-		.component('partialPayment', {
-			require: { primoExplore: '^primoExplore' },
-			bindings: { parentCtrl: '<' },
-			controller: 'partialPaymentController',
-			template: ''
-		});
+		  $scope.initializeForm = function() {
+			  $scope.errors = {};
+			  $scope.form.fees = {};
+			  if ($scope.payIndividualFees) {
+				  $scope.allowedFees.forEach(fee => {
+					  $scope.form.fees[fee.fineid] = fee.amount;
+				  });
+			  } else {
+				  $scope.form.fees.all = $scope.totalAmount.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+			  }
+		  }
+
+		  $scope.submit = function() {
+			  $scope.processing = true;
+			  let postUrl = paymentServiceUrl + '?jwt=' + self.getJwt();
+			  $http.post(postUrl, $scope.form, {
+				  headers: {
+					  'Accept': 'application/json',
+					  'Content-Type': 'application/json'
+				  }
+			  }).then(function(result) {
+				  // call returns the auth.net payment url, and a token representing the payment options
+				  // to show the form, we need to make a post to that url with the token in the post body
+				  let form = angular.element($interpolate(`
+					  <form action="{{url}}" method="post">
+						  <input type="hidden" name="token" value="{{token}}" />
+					  </form>
+				  `)(result.data));
+				  angular.element(document.getElementsByTagName('body')).append(form);
+				  form[0].submit();
+			  }, function(error) {
+				  // if there are errors with individual fees, they will be returned in a json object where the keys are the fee ids
+				  // there may also be a key that is the string 'other' for errors not associated with a specific fee
+				  // or there could be another kind of error that is just returned as a string, in which case we treat it as an 'other' error
+				  if (typeof error === 'string') {
+					  $scope.errors = { 'other' : error };
+				  } else {
+					  $scope.errors = error.data;
+				  }
+				  $scope.processing = false;
+			  });
+		  };
+
+		  this.openModal = function() {
+			  let allowedLibrariesUrl = paymentServiceUrl + 'allowed_libraries.php?jwt=' + self.getJwt();
+			  $http.get(allowedLibrariesUrl).then(function(result) {
+				  let allowInstitutionFees = result.data.allowInstitutionFees;
+				  let allowedLibraryNames = result.data.libraries.map(library => library.name);
+				  $scope.allowedFees = [];
+				  $scope.excludedFees = [];
+				  $scope.totalAmount = 0;
+				  let amountRegexp = /\d+(\.\d{2})/;
+				  for (let fee of self.parentCtrl.finesDisplay) {
+					  let libraryName = fee.expandedDisplay.find(item => item.label == 'fines.fine_main_location')?.data;
+					  if (!libraryName) {
+						  if (allowInstitutionFees) {
+							  fee.amount = fee.firstLineRight.match(amountRegexp)[0];
+							  $scope.totalAmount += parseFloat(fee.amount);
+							  $scope.allowedFees.push(fee);
+						  } else {
+							  $scope.excludedFees.push(fee);
+						  }
+					  }
+					  else if (allowedLibraryNames.includes(libraryName)) {
+						  fee.amount = fee.firstLineRight.match(amountRegexp)[0];
+						  $scope.totalAmount += parseFloat(fee.amount);
+						  $scope.allowedFees.push(fee);
+					  } else {
+						  $scope.excludedFees.push(fee);
+					  }
+				  }
+				  $scope.form = { paymentSettings: 'primo' };
+				  $scope.processing = false;
+				  $scope.payAllFees = false;
+				  $scope.payIndividualFees = false;
+				  $scope.initializeForm();
+				  $scope.errors = {};
+				  $mdDialog.show({
+					  template: `
+					  <md-progress-linear class="header-progress-bar animation-scale-up-down" md-mode="indeterminate" ng-show="processing"></md-progress-linear>
+					  <div class="finesPaymentDialog form-focus layout-margin">
+						  <h2>Fine + Fee Payment</h2>
+						  <div style="margin: 15px">
+							  <h3 ng-if="allowedFees.length > 0">Pay online</h3>
+							  <form ng-if="allowedFees.length > 0" ng-submit="submit()">
+								  <div class="fees" ng-repeat="fee in allowedFees" layout="column">
+									  <strong>{{fee.firstLineLeft}}</strong>
+									  <span>{{fee.secondLineLeft}}</span>
+									  <div layout="row" layout-align="space-between center">
+										  <span>{{fee.firstLineRight}}</span>
+										  <div ng-if="payIndividualFees">
+											  Amount: $
+											  <input class="md-input" ng-model="form.fees[fee.fineid]" />
+										  </div>
+									  </div>
+									  <span ngIf="errors[fee.fineid]" class="error">{{errors[fee.fineid]}}</span>
+								  </div>
+								  <div layout="row" layout-align="space-between center" ng-if="!payIndividualFees">
+									  <span>Total Due {{totalAmount | number: 2}} USD</span>
+									  <div>
+										  Amount: $
+										  <input class="md-input" ng-model="form.fees['all']" />
+									  </div>
+								  </div>
+								  <span ng-if="errors['all']" class="error">{{errors['all']}}</span>
+								  <div ng-show="!processing" layout="row" layout-align="center center">
+									  <md-button class="md-button md-raised" ng-click="toggleForm()">
+										  {{payIndividualFees ? 'Pay all fees together' : 'Pay fees individually'}}
+									  </md-button>
+									  <input class="md-button md-raised" type="submit" value="Pay Now" />
+								  </div>
+								  <span ng-if="errors['other']" class="error">{{errors['other']}}</span>
+							  </form>
+							  <h3 ng-if="excludedFees.length > 0">Pay in person</h3>
+							  <div class="fees" ng-repeat="fee in excludedFees" layout="column">
+								  <strong>{{fee.firstLineLeft}}</strong>
+								  <span>{{fee.secondLineLeft}}</span>
+								  <span>{{fee.firstLineRight}}</span>
+							  </div>
+							  <span ng-if="allowedFees.length == 0 && excludedFees.length == 0">You currently have no outstanding fines or fees.</span>
+						  </div>
+					  </div>`,
+					  scope: $scope,
+					  preserveScope: true,
+					  clickOutsideToClose: true
+				  });
+			  });
+		  };
+	  }])
+	  .component('partialPayment', {
+		  require: { primoExplore: '^primoExplore' },
+		  bindings: { parentCtrl: '<' },
+		  controller: 'partialPaymentController',
+		  template: ''
+	  });
 })();
 
 })();
