@@ -703,10 +703,8 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 				  }
 				  $scope.form = { paymentSettings: 'primo' };
 				  $scope.processing = false;
-				  $scope.payAllFees = false;
 				  $scope.payIndividualFees = false;
 				  $scope.initializeForm();
-				  $scope.errors = {};
 				  $mdDialog.show({
 					  template: `
 					  <md-progress-linear class="header-progress-bar animation-scale-up-down" md-mode="indeterminate" ng-show="processing"></md-progress-linear>
@@ -765,7 +763,6 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 		  controller: 'partialPaymentController',
 		  template: ''
 	  });
-})();
 
 })();
 
