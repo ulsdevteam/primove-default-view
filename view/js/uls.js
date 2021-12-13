@@ -681,21 +681,27 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 				  $scope.allowedFees = [];
 				  $scope.excludedFees = [];
 				  $scope.totalAmount = 0;
-				  let amountRegexp = /\d+(\.\d{2})/;
+				  let amountRegexp = /\d+(\.\d{2})?/;
 				  for (let fee of self.parentCtrl.finesDisplay) {
 					  let libraryName = fee.expandedDisplay.find(item => item.label == 'fines.fine_main_location')?.data;
 					  if (!libraryName) {
 						  if (allowInstitutionFees) {
-							  fee.amount = fee.firstLineRight.match(amountRegexp)[0];
-							  $scope.totalAmount += parseFloat(fee.amount);
+							  let matches = fee.firstLineRight.match(amountRegexp);
+							  if (matches) {
+								  fee.amount = matches[0];
+								  $scope.totalAmount += parseFloat(fee.amount);
+							  }
 							  $scope.allowedFees.push(fee);
 						  } else {
 							  $scope.excludedFees.push(fee);
 						  }
 					  }
 					  else if (allowedLibraryNames.includes(libraryName)) {
-						  fee.amount = fee.firstLineRight.match(amountRegexp)[0];
-						  $scope.totalAmount += parseFloat(fee.amount);
+						  let matches = fee.firstLineRight.match(amountRegexp);
+						  if (matches) {
+							  fee.amount = matches[0];
+							  $scope.totalAmount += parseFloat(fee.amount);
+						  }
 						  $scope.allowedFees.push(fee);
 					  } else {
 						  $scope.excludedFees.push(fee);
