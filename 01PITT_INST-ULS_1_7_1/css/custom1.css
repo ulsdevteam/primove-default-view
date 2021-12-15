@@ -364,3 +364,11 @@ color: red;
 	font-size: smaller;
 	margin-left: 5px;
 }
+
+prm-fines a.md-button.inline-button {
+	display: none;
+}
+
+prm-fines-overview a.md-button {
+	display: none;
+}
