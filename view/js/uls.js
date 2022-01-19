@@ -674,6 +674,56 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 		  };
 
 		  this.openModal = function() {
+			  $scope.processing = true;
+			  $mdDialog.show({
+				  template: `
+				  <md-progress-linear class="header-progress-bar animation-scale-up-down" md-mode="indeterminate" ng-show="processing"></md-progress-linear>
+				  <div class="finesPaymentDialog form-focus layout-margin">
+					  <h2>Fine + Fee Payment</h2>
+					  <div style="margin: 15px">
+						  <h3 ng-if="allowedFees.length > 0">Pay online</h3>
+						  <form ng-if="allowedFees.length > 0" ng-submit="submit()">
+							  <div class="fees" ng-repeat="fee in allowedFees" layout="column">
+								  <strong>{{fee.firstLineLeft}}</strong>
+								  <span>{{fee.secondLineLeft}}</span>
+								  <div layout="row" layout-align="space-between center">
+									  <span>{{fee.firstLineRight}}</span>
+									  <div style="margin-left:10px;" ng-if="payIndividualFees">
+										  Amount: $
+										  <input class="md-input" ng-model="form.fees[fee.fineid]" />
+									  </div>
+								  </div>
+								  <span ngIf="errors[fee.fineid]" class="error">{{errors[fee.fineid]}}</span>
+							  </div>
+							  <div layout="row" layout-align="space-between center" ng-if="!payIndividualFees">
+								  <span>Total Due {{totalAmount | number: 2}} USD</span>
+								  <div style="margin-left:10px;">
+									  Amount: $
+									  <input class="md-input" ng-model="form.fees['all']" />
+								  </div>
+							  </div>
+							  <span ng-if="errors['all']" class="error">{{errors['all']}}</span>
+							  <div ng-show="!processing" layout="row" layout-align="center center">
+								  <md-button class="md-button md-raised" ng-click="toggleForm()">
+									  {{payIndividualFees ? 'Pay all fees together' : 'Pay fees individually'}}
+								  </md-button>
+								  <input class="md-button md-raised" type="submit" value="Pay Now" />
+							  </div>
+							  <span ng-if="errors['other']" class="error">{{errors['other']}}</span>
+						  </form>
+						  <h3 ng-if="excludedFees.length > 0">Pay in person</h3>
+						  <div class="fees" ng-repeat="fee in excludedFees" layout="column">
+							  <strong>{{fee.firstLineLeft}}</strong>
+							  <span>{{fee.secondLineLeft}}</span>
+							  <span>{{fee.firstLineRight}}</span>
+						  </div>
+						  <span ng-if="allowedFees.length == 0 && excludedFees.length == 0">You currently have no outstanding fines or fees.</span>
+					  </div>
+				  </div>`,
+				  scope: $scope,
+				  preserveScope: true,
+				  clickOutsideToClose: true
+			  });
 			  let allowedLibrariesUrl = paymentServiceUrl + 'allowed_libraries.php?jwt=' + self.getJwt();
 			  $http.get(allowedLibrariesUrl).then(function(result) {
 				  let allowInstitutionFees = result.data.allowInstitutionFees;
@@ -710,56 +760,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 				  $scope.form = { paymentSettings: 'primo' };
 				  $scope.processing = false;
 				  $scope.payIndividualFees = false;
-				  $scope.initializeForm();
-				  $mdDialog.show({
-					  template: `
-					  <md-progress-linear class="header-progress-bar animation-scale-up-down" md-mode="indeterminate" ng-show="processing"></md-progress-linear>
-					  <div class="finesPaymentDialog form-focus layout-margin">
-						  <h2>Fine + Fee Payment</h2>
-						  <div style="margin: 15px">
-							  <h3 ng-if="allowedFees.length > 0">Pay online</h3>
-							  <form ng-if="allowedFees.length > 0" ng-submit="submit()">
-								  <div class="fees" ng-repeat="fee in allowedFees" layout="column">
-									  <strong>{{fee.firstLineLeft}}</strong>
-									  <span>{{fee.secondLineLeft}}</span>
-									  <div layout="row" layout-align="space-between center">
-										  <span>{{fee.firstLineRight}}</span>
-										  <div ng-if="payIndividualFees">
-											  Amount: $
-											  <input class="md-input" ng-model="form.fees[fee.fineid]" />
-										  </div>
-									  </div>
-									  <span ngIf="errors[fee.fineid]" class="error">{{errors[fee.fineid]}}</span>
-								  </div>
-								  <div layout="row" layout-align="space-between center" ng-if="!payIndividualFees">
-									  <span>Total Due {{totalAmount | number: 2}} USD</span>
-									  <div>
-										  Amount: $
-										  <input class="md-input" ng-model="form.fees['all']" />
-									  </div>
-								  </div>
-								  <span ng-if="errors['all']" class="error">{{errors['all']}}</span>
-								  <div ng-show="!processing" layout="row" layout-align="center center">
-									  <md-button class="md-button md-raised" ng-click="toggleForm()">
-										  {{payIndividualFees ? 'Pay all fees together' : 'Pay fees individually'}}
-									  </md-button>
-									  <input class="md-button md-raised" type="submit" value="Pay Now" />
-								  </div>
-								  <span ng-if="errors['other']" class="error">{{errors['other']}}</span>
-							  </form>
-							  <h3 ng-if="excludedFees.length > 0">Pay in person</h3>
-							  <div class="fees" ng-repeat="fee in excludedFees" layout="column">
-								  <strong>{{fee.firstLineLeft}}</strong>
-								  <span>{{fee.secondLineLeft}}</span>
-								  <span>{{fee.firstLineRight}}</span>
-							  </div>
-							  <span ng-if="allowedFees.length == 0 && excludedFees.length == 0">You currently have no outstanding fines or fees.</span>
-						  </div>
-					  </div>`,
-					  scope: $scope,
-					  preserveScope: true,
-					  clickOutsideToClose: true
-				  });
+				  $scope.initializeForm();					
 			  });
 		  };
 	  }])
