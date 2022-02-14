@@ -689,7 +689,7 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 								  <div layout="row" layout-align="space-between center">
 									  <span>{{fee.firstLineRight}}</span>
 									  <div style="margin-left:10px;" ng-if="payIndividualFees">
-										  Amount: $
+										  Enter payment amount: $
 										  <input class="md-input" ng-model="form.fees[fee.fineid]" />
 									  </div>
 								  </div>
@@ -698,12 +698,12 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 							  <div layout="row" layout-align="space-between center" ng-if="!payIndividualFees">
 								  <span>Total Due {{totalAmount | number: 2}} USD</span>
 								  <div style="margin-left:10px;">
-									  Amount: $
+									  Enter payment amount: $
 									  <input class="md-input" ng-model="form.fees['all']" />
 								  </div>
 							  </div>
 							  <span ng-if="errors['all']" class="error">{{errors['all']}}</span>
-							  <div ng-show="!processing" layout="row" layout-align="center center">
+							  <div ng-show="!processing" layout="row" layout-align="space-between center">
 								  <md-button class="md-button md-raised" ng-click="toggleForm()">
 									  {{payIndividualFees ? 'Pay all fees together' : 'Pay fees individually'}}
 								  </md-button>
