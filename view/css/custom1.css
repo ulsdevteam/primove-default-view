@@ -374,6 +374,6 @@ prm-fines-overview a.md-button {
 }
 
 /* Date-Picker Fix */
-table.md-calendar-day-header {
+div.md-datepicker-calendar-pane {
 	background-color: white;
 }
