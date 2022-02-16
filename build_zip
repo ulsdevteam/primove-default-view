@@ -4,7 +4,7 @@
 
 printf "\nRebuilding zip file.\n"
 
-rm 01PITT_INST-ULS_1_7_1.zip
-zip -r 01PITT_INST-ULS_1_7_1.zip 01PITT_INST-ULS_1_7_1/
+rm 01PITT_INST-ULS_1_7_2.zip
+zip -r 01PITT_INST-ULS_1_7_2.zip 01PITT_INST-ULS_1_7_2/
 
 printf "\nRebuild complete.\n"
