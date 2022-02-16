@@ -372,3 +372,8 @@ prm-fines a.md-button.inline-button {
 prm-fines-overview a.md-button {
 	display: none;
 }
+
+/* Date-Picker Fix */
+table.md-calendar-day-header {
+	background-color: white;
+}
