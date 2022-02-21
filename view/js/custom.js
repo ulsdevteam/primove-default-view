@@ -7,6 +7,31 @@
 		var hathi;
 		var images = [];
 
+		function loadModules() {
+			var lc = document.createElement('script');
+			lc.type = 'module';
+			lc.async = 'false';
+			if (document.location.protocol == 'https:') {
+				var protocol = 'https://';
+			}
+			else {
+				protocol='http://';
+			}
+
+			var currentScriptLocation;
+  			if (document.currentScript) {
+				currentScriptLocation = document.currentScript.src;
+			} else {
+				var scripts = document.getElementsByTagName('script');
+				currentScriptLocation = scripts[scripts.length - 1].src;
+			}
+			var path = currentScriptLocation.substring(0, currentScriptLocation.lastIndexOf('/'));
+			console.log("Path to the current script is: "+path);
+
+			lc.src = path + '/custom2.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
+		}
+
 		function addGoogleAnalytics() {
 			app.component('prmTopBarBefore', {
 				template: '\n\t\t\t\t<!-- Global site tag (gtag.js) - Google Analytics -->\n\t\t\t\t<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129368242-1"></script>\n\t\t\t'
@@ -141,6 +166,7 @@
 
 			angular.element(function () {
 				console.log('page loading completed');
+				loadModules();
 				addGoogleAnalytics();
 				prmSearchResultAvailabilityLineAfterTemplate();
 				chatWidget();
