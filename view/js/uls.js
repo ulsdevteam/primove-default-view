@@ -1,3 +1,5 @@
+import { newSearchSameTab } from "./uls-newSearchSameTab.js";
+
 (function () {
 	"use strict";
 	'use strict';
@@ -18,25 +20,6 @@
 			gtag('js', new Date());
 
 			gtag('config', 'UA-129368242-1');
-		}
-
-		/*
-		 *  Removes the target attribute from the new search link.
-		 *  Will also reset the aria label to be correct (if it's in English)
-		 */
-		function newSearchSameTab() {
-			console.log("Updating New Search tab.");
-			var newSearchLink = document.querySelector('[data-main-menu-item="NewSearch"] a');
-			if (newSearchLink) {
-				newSearchLink.removeAttribute("target");
-
-				if (newSearchLink.getAttribute("aria-label") == "New Search, opens in a new window") {
-					newSearchLink.setAttribute("aria-label", "New Search");
-				}
-			} else {
-				// this is terrible and I want to see if it works anyway.
-				setTimeout(newSearchSameTab, 500);
-			}
 		}
 
 		/* libanswers chat widget 
@@ -136,16 +119,18 @@
 		}
 
 		function privateSetup() {
+			// Setting up imports here, so that they can be ready to go by the time we get to the angular.element call
+			console.log("Importing modules.");
+
 			app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron']);
 			console.log("Executing custom JS.");
 
 			angular.element(function () {
 				console.log('page loading completed');
-				loadModules();
 				addGoogleAnalytics();
 				prmSearchResultAvailabilityLineAfterTemplate();
 				chatWidget();
-				newSearchSameTab();
+				newSearchSameTab(); //modularized. In theory.
 				thirdIron();
 				addressSelector();
 				//hideGetItWithHathi();
