@@ -1,4 +1,8 @@
+// Import statements are always in the topmost level of a module, and regardless of line order are always executed first.
+// So why not just put them here to reduce confusion?
 import { newSearchSameTab } from "./uls-newSearchSameTab.js";
+import { chatWidget } from "./uls-libAnswersChatWidget.js";
+import { addGoogleAnalytics } from "./uls-addGoogleAnalytics.js";
 
 (function () {
 	"use strict";
@@ -9,35 +13,6 @@ import { newSearchSameTab } from "./uls-newSearchSameTab.js";
 		var hathi;
 		var images = [];
 
-		function addGoogleAnalytics() {
-			app.component('prmTopBarBefore', {
-				template: '\n\t\t\t\t<!-- Global site tag (gtag.js) - Google Analytics -->\n\t\t\t\t<script async src="https://www.googletagmanager.com/gtag/js?id=UA-129368242-1"></script>\n\t\t\t'
-			});
-			window.dataLayer = window.dataLayer || [];
-			function gtag() {
-				dataLayer.push(arguments);
-			}
-			gtag('js', new Date());
-
-			gtag('config', 'UA-129368242-1');
-		}
-
-		/* libanswers chat widget 
-		 * from https://developers.exlibrisgroup.com/blog/embedding-springshare-libchat-widget-into-the-primo-nu/
-		 */
-		function chatWidget() {
-			var lc = document.createElement('script');
-			lc.type = 'text/javascript';
-			lc.async = 'true';
-			if (document.location.protocol == 'https:') {
-				var protocol = 'https://';
-			}
-			else {
-				protocol='http://';
-			}
-			lc.src = protocol + 'v2.libanswers.com/load_chat.php?hash=a962140fb4e6ffbcdae688be4c64cba5';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
-		}
 		/*
 		 * Adds Hathi Trust availablity links where applicable
 		 * Creates placeholder for Third Iron/Browzine content
@@ -119,7 +94,6 @@ import { newSearchSameTab } from "./uls-newSearchSameTab.js";
 		}
 
 		function privateSetup() {
-			// Setting up imports here, so that they can be ready to go by the time we get to the angular.element call
 			console.log("Importing modules.");
 
 			app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron']);
@@ -130,7 +104,7 @@ import { newSearchSameTab } from "./uls-newSearchSameTab.js";
 				addGoogleAnalytics();
 				prmSearchResultAvailabilityLineAfterTemplate();
 				chatWidget();
-				newSearchSameTab(); //modularized. In theory.
+				newSearchSameTab();
 				thirdIron();
 				addressSelector();
 				//hideGetItWithHathi();
