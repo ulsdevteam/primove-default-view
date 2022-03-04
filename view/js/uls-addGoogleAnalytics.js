@@ -1,4 +1,4 @@
-import { loadScript } from './uls-loadScript.js';
+import { loadScript } from './primove-tools/primove-tools.js';
 
 function addGoogleAnalytics() {
 	loadScript("https://www.googletagmanager.com/gtag/js?id=UA-129368242-1", false, false);

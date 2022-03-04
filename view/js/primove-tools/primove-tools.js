@@ -1,0 +1,1 @@
+export { loadScript } from './load-script/load-script.js'
