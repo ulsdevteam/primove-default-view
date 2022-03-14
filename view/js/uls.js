@@ -1,8 +1,8 @@
 // Import statements are always in the topmost level of a module, and regardless of line order are always executed first.
 // So why not just put them here to reduce confusion?
-import { newSearchSameTab } from "./uls-newSearchSameTab.js";
-import { chatWidget } from "./uls-libAnswersChatWidget.js";
-import { addGoogleAnalytics } from "./uls-addGoogleAnalytics.js";
+import { newSearchSameTab } from "./modules/new-search-same-tab/new-search-same-tab.js";
+import { chatWidget } from "./modules/libanswers-chat-widget/libanswers-chat-widget.js";
+import { addGoogleAnalytics } from "./modules/google-analytics/google-analytics.js";
 
 (function () {
 	"use strict";
