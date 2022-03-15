@@ -3,7 +3,6 @@
 import { newSearchSameTab } from "./uls-newSearchSameTab.js";
 import { chatWidget } from "./uls-libAnswersChatWidget.js";
 import { addGoogleAnalytics } from "./uls-addGoogleAnalytics.js";
-import { checkBoxIfInReshareScope, reShareIntegrationButton } from "./uls-reShareIntegrationButton.js"
 
 (function () {
 	"use strict";
@@ -109,7 +108,6 @@ import { checkBoxIfInReshareScope, reShareIntegrationButton } from "./uls-reShar
 
 			angular.element(function () {
 				console.log('page loading completed');
-				checkBoxIfInReshareScope();
 				addGoogleAnalytics();
 				prmSearchResultAvailabilityLineAfterTemplate();
 				chatWidget();
@@ -119,7 +117,6 @@ import { checkBoxIfInReshareScope, reShareIntegrationButton } from "./uls-reShar
 				partialPaymentDialog();
 				//hideGetItWithHathi();
 				//reShareButton();
-				reShareIntegrationButton();
 
 			});
 
