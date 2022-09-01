@@ -161,6 +161,31 @@ prm-search-bookmark-filter #fixed-buttons-holder #favorites-button md-icon svg {
 	}
 }
 
+/*
+	As of the March release, the advanced search form collapses after it's been used. This
+	should prevent its collapse. I copied the selector, but "prm-search-bar .shrink-content"
+	was the original selector we were interested in and that's the one I've added some
+	specificity to.
+
+	As of the May release, we also have a display: none !important; rule we need to deal
+	with, but only on the search fields. For some reason.
+*/
+prm-atoz-search-bar .shrink-content,
+prm-browse-search-bar .shrink-content,
+prm-newspapers-search-bar .shrink-content,
+prm-search-bar .shrink-content.advanced-search-tabs,
+prm-tags-search-bar .shrink-content {
+	max-height: fit-content;
+}
+
+div.advanced-search-tabs md-card fieldset .ng-hide:not(.ng-hide-animate) {
+	display: block !important; /* YES we need !important, to override ANOTHER !important... */
+}
+
+prm-advanced-search form button.collapsed-button prm-icon[icon-definition="chevron-up"] {
+	display: none;
+}
+
 /* Moving Top of Page Arrow Color Hover*/
 prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
 
@@ -289,7 +314,6 @@ md-input-container label[translate="almaRequest.comment"]{position:relative;}
   .dialogdemoBasicUsage .dialog-demo-prerendered md-checkbox {
 	margin-bottom: 0; }
 
-#noContactRequestInstructions{display:none; background-color:pink; padding:5px;}
 #shipItRequestInstructions{display:none; background-color:pink; padding:5px;}
 
 /* top navigation fix after ThirdIron integration*/
@@ -322,18 +346,59 @@ margin-right: -86px;
 prm-topbar {
    height: 4%;
 }
-/* yellow message bar */
-#message_top {
-   width: 100%;
-   background-color: #feb81c;
-   text-align: center;
-   font-size: large;
-   font-weight: 700;
-   position: relative;
-   z-index: 100;
+
+.shipItAddress {
+	background-color:#f8f8f8;
+	z-index: 1;
+	position: relative;
+	top: -200px;
+	left: 10px;
+	max-width: 300px;
+	width: auto;
 }
-/* text in yellow bar */
-#message_top p {
-   margin: 0;
-   padding: 1% 2%;
+
+/*we're hijacking .formSubmited (sic) while adding more form validation, so block this tooltip */
+md-tooltip[ng-if="$ctrl.formSubmited"] { 
+	display:none;
+}
+
+.zipcodeBlacklistWarning {
+	font-weight: bold;
+}
+
+.shipItAddress .md-button {
+	border: 1px solid black;
+}
+
+.shipItAddress .layout-column {
+	flex: 1;
+}
+
+.tempAddressError {
+margin-left: 10px;
+font-size: small;
+font-weight: bold;
+color: red;
+}
+
+.addressFormSubmissionErrorMessage {
+	font-weight: bold;
+}
+
+.shipItAddress .addressFormNote{
+	font-size: smaller;
+	margin-left: 5px;
+}
+
+prm-fines a.md-button.inline-button {
+	display: none;
+}
+
+prm-fines-overview a.md-button {
+	display: none;
+}
+
+/* Date-Picker Fix */
+div.md-datepicker-calendar-pane {
+	background-color: white;
 }

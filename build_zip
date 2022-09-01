@@ -1,10 +1,21 @@
 #!/bin/bash
 
-# just a quick thing to rebuild the zip file. Update the paths as needed.
+# just a quick thing to rebuild the zip file.
+source build_config
 
-printf "\nRebuilding zip file.\n"
+# test if $NAME is not blank and file/directory $NAME does not exist
+if [ "$NAME" != "" -a ! -e "$NAME" ] ; then
+	# create a temporary directory
+	cp -R ./view/ ./$NAME
 
-rm 01PITT_INST-browzine.zip
-zip -r 01PITT_INST-browzine.zip 01PITT_INST-browzine/
+	# build a zip file
+	printf "\nRebuilding zip file.\n"
+	rm ${NAME}.zip
+	zip -r ${NAME}.zip ./${NAME}/
+	printf "\nRebuild complete.\n"
 
-printf "\nRebuild complete.\n"
+	# remove the temporary directory
+	rm -R ./${NAME}/
+else
+	>&2 echo "Error: the temporary directory we want to create already exists."
+fi
