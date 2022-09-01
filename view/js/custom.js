@@ -1,3 +1,4 @@
+
 // Bootstrapping up to uls.js
 function bootstrapToULS() {
 	var lc = document.createElement('script');
@@ -94,6 +95,7 @@ function addressSelector() {
 
 
 var hathi;
+app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron']);
 prmSearchResultAvailabilityLineAfterTemplate();
 thirdIron();
 addressSelector();
@@ -264,6 +266,258 @@ angular.module('hathiTrustAvailability', []).constant('hathiTrustBaseUrl', 'http
 			  </span>'
 });
 
+//allow users to set a temporary shipping address for item fullfillment
+angular
+	.module('addressSelector', [])
+	.constant('addressServiceBaseUrl', 'https://' + (location.hostname == 'pitt.primo.exlibrisgroup.com' ? '' : 'dev-') + 'patron.libraries.pitt.edu/')
+	.constant('zipcodeBlacklist', ['15201','15203','15206','15207','15208','15211','15213','15217','15219','15222','15224','15230','15232','15233','15260'])
+	.constant('submissionErrorMessage', "An error occurred!")
+	.controller('addressSelectorController', ['$scope', '$http', 'addressServiceBaseUrl', 'zipcodeBlacklist', 'submissionErrorMessage', function ($scope, $http, addressServiceBaseUrl, zipcodeBlacklist, submissionErrorMessage) {
+	var self = this;
+	
+	//get logged-in user's authentication token from Primo
+	this.getJwt = function () {
+		var jwt = self.primoExplore.storageutil.sessionStorage.primoExploreJwt;
+		// strip quotes from jwt
+		if (jwt.charAt(0) === '"' && jwt.charAt(jwt.length - 1) === '"') {
+			jwt = jwt.slice(1, -1);
+		}
+		return jwt;
+	}
+	$scope.addresses = [];
+	$scope.currentAddress = null;
+	$scope.showInput = false;
+	$scope.addressInput = {
+		line1: "",
+		line2: null,
+		line3: null,
+		line4: null,
+		line5: null,
+		city: "",
+		state_province: "",
+		postal_code: "",
+	};
+	$scope.statusMessage = "";
+	$scope.validationMessage = "";
+	$scope.shownAddressLines = 2;
+	$scope.notYetShown = true;
+	$scope.loading = false;
+
+	//we only ship materials to patrons if they don't live nearby
+	//check a zipcode blacklist for disallowed shipping destinations
+	//disable submission and change on-screen message if addresss is ineligible
+	$scope.zipCodeBlacklist = function () {
+		//$scope.currentAddress seems to become null during process of reverting back to permanent address
+		//don't allow submission until it has a value
+		if (!$scope.currentAddress || zipcodeBlacklist.includes($scope.currentAddress.postal_code.substring(0,5))) {
+			$scope.eligibleForShipIt = false;
+			$scope.shippingAvailability = "cannot";
+		}
+		//eligible zipcode for shipping.
+		else {
+			$scope.eligibleForShipIt = true;
+			$scope.shippingAvailability = "will";
+			self.parentCtrl.formSubmited = false;
+		}
+	}
+
+	//return true if Home Address is selected from the get-it request form
+	$scope.showAddresses = function () {
+		if (typeof self.parentCtrl.requestService !== 'undefined' && typeof self.parentCtrl.requestService._formData !== 'undefined' && typeof self.parentCtrl.requestService._formData.pickupLocation !== 'undefined'){
+			let selected_home_address = self.parentCtrl.requestService._formData.pickupLocation.indexOf('$$USER_HOME_ADDRESS');
+			//disable the submit button by default when Home Address is selected
+			//we'll disable later if conditions are met
+			self.parentCtrl.formSubmited = selected_home_address!=-1;
+			if ($scope.notYetShown && selected_home_address>=0) {
+				$scope.notYetShown = false;
+				$scope.getAddresses();
+			}
+			$scope.zipCodeBlacklist();
+			return selected_home_address!=-1;
+		}
+	};
+	
+	//query the Alma API and retrieve the user's current address
+	//load it into the model while giving the user feedback on progress
+	$scope.getAddresses = function () {
+		$scope.statusMessage = 'Loading address information';
+		$scope.loading = true;
+		let url = addressServiceBaseUrl + 'address/?jwt=' + self.getJwt();
+		$http.get(url).then( function (result) {
+			$scope.addresses = result.data;
+			for (var i = 0; i < $scope.addresses.length; i++) {
+				if ($scope.addresses[i].preferred) {
+					$scope.currentAddress = $scope.addresses[i];
+					$scope.loading = false;
+					break;
+				}
+			}
+			if ($scope.currentAddress == null) {
+				$scope.statusMessage = 'No home address found.';
+				$scope.loading = false;
+			}
+		}, function (error) {
+			$scope.statusMessage = submissionErrorMessage;
+			$scope.loading = false;
+		});
+	}
+
+	$scope.usingTempAddress = function () {
+		return $scope.currentAddress.address_type[0].value != 'home';
+	}
+
+	$scope.openInput = function () {
+		$scope.showInput = true;
+	}
+
+	$scope.hideInput = function () {
+		$scope.showInput = false;
+		$scope.statusMessage = "";
+		$scope.validationMessage = "";
+		$scope.shownAddressLines = 2;
+	}
+	
+	//validate and submit temp address form
+	//saves valid address data to Alma user API
+	$scope.setTemporaryAddress = function () {
+		//null == a valid form entry
+		$scope.errors = {
+			submission: null,
+			line1: null,
+			city: null,
+			state_province: null,
+			postal_code: null,
+		}
+
+		//validation conditions
+		if (!$scope.addressInput.line1) {
+			$scope.errors.line1 = 'Line 1 is required';
+		}
+		if (!$scope.addressInput.city) {
+			$scope.errors.city = 'City is required';
+		}
+		if (!$scope.addressInput.state_province.trim().match(/^[A-Z]{2}$/)) {
+			$scope.errors.state_province = 'The state code is not formatted correctly.';
+		}
+		if (!$scope.addressInput.postal_code.trim().match(/^\d{5}([-\s]?\d{4})?$/)) {
+			$scope.errors.postal_code = 'The zip code is not formatted correctly.';
+		}
+		if (zipcodeBlacklist.includes($scope.addressInput.postal_code.substring(0,5))) {
+			$scope.errors.postal_code = 'Addresses in this zip code are not eligible for Ship It service.';
+		}
+
+		//don't bother submitting to the Alma API if there is an error
+		//Object.values() returns an array of property values
+		//we use .some() to return early if any of those array values are not null
+		for (let i = 0; i<Object.values($scope.errors).length;i++){
+			if (Object.values($scope.errors)[i] !== null){
+				return;
+			}
+		}
+
+
+		$scope.statusMessage = 'Processing';
+		$scope.loading = true;
+		$scope.currentAddress = null;
+		$scope.showInput = false;
+		let url = addressServiceBaseUrl + 'address/?jwt=' + self.getJwt();
+		$http.put(url, $scope.addressInput).then(function(){
+			$scope.getAddresses();
+			$scope.validationMessage = "";
+		}, function (error) {
+			$scope.showInput = true;
+			//if an error occurs, remove the Processing status
+			$scope.statusMessage = "";
+			$scope.errors.submission = submissionErrorMessage;
+			$scope.loading = false;
+		});
+	}
+
+	$scope.revertToHomeAddress = function () {
+		$scope.statusMessage = 'Processing';
+		$scope.loading = true;
+		$scope.currentAddress = null;
+		let url = addressServiceBaseUrl + 'address/?jwt=' + self.getJwt();
+		$http.delete(url).then(function(){
+			$scope.getAddresses();
+		}, function (error){
+			$scope.statusMessage = submissionErrorMessage;
+			$scope.loading = false;
+		});
+	}
+
+	$scope.showNextLine = function () {
+		$scope.shownAddressLines += 1;
+	}
+
+}])
+.component('addressSelector', {
+	require: {
+		primoExplore: '^primoExplore'
+	},
+	bindings: { parentCtrl: '<' },
+	controller: 'addressSelectorController',
+	template: '<div class="shipItAddress form-focus layout-margin" layout="row" ng-if="showAddresses()">\
+	<span ng-if="!currentAddress">{{statusMessage}}<span ng-if="loading" class="loading"></span></span>\
+	<div layout="column" ng-if="currentAddress && !showInput">\
+		<span ng-if="!eligibleForShipIt" class="zipcodeBlacklistWarning">Addresses near the Pitt campus are not eligible for Ship It service</span>\
+		<span>Item {{shippingAvailability}} be shipped to:</span>\
+		<span ng-if="currentAddress.line1">{{currentAddress.line1}}</span>\
+		<span ng-if="currentAddress.line2">{{currentAddress.line2}}</span>\
+		<span ng-if="currentAddress.line3">{{currentAddress.line3}}</span>\
+		<span ng-if="currentAddress.line4">{{currentAddress.line4}}</span>\
+		<span ng-if="currentAddress.line5">{{currentAddress.line5}}</span>\
+		<span>{{currentAddress.city}}, {{currentAddress.state_province}} {{currentAddress.postal_code}}</span>\
+		<button class="md-button md-raised" ng-if="currentAddress && !showInput && !usingTempAddress()" (click)="openInput()">Set Temporary Address</button>\
+		<button class="md-button md-raised" ng-if="currentAddress && !showInput && usingTempAddress()" (click)="openInput()">Update Temporary Address</button>\
+		<button class="md-button md-raised" ng-if="currentAddress && !showInput && usingTempAddress()" (click)="revertToHomeAddress()">Revert to Home Address</button>\
+	</div>\
+	<form layout="column" ng-if="showInput">\
+		<label>Enter the desired address below.</label>\
+		<label class="addressFormNote">Note that this is for Library use only and does not change your official address with the University.</label>\
+		<div ng-if="errors.submission" class="addressFormSubmissionErrorMessage">{{errors.submission}}</div>\
+		<div style="padding-top:5px;" layout="row">\
+			<label style="width:50px;">Line 1: </label>\
+			<input class="md-input" type="text" ng-model="addressInput.line1"></input>\
+		</div>\
+		<div ng-if="errors.line1" class="tempAddressError">{{errors.line1}}</div>\
+		<div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 2">\
+			<label style="width:50px;">Line 2: </label>\
+			<input class="md-input" type="text" ng-model="addressInput.line2"></input>\
+		</div>\
+		<div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 3">\
+			<label style="width:50px;">Line 3: </label>\
+			<input class="md-input" type="text" ng-model="addressInput.line3"></input>\
+		</div>\
+		<div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 4">\
+			<label style="width:50px;">Line 4: </label>\
+			<input class="md-input" type="text" ng-model="addressInput.line4"></input>\
+		</div>\
+		<div style="padding-top:5px;" layout="row" ng-if="shownAddressLines >= 5">\
+			<label style="width:50px;">Line 5: </label>\
+			<input class="md-input" type="text" ng-model="addressInput.line5"></input>\
+		</div>\
+		<div style="padding-top:5px;" layout="row">\
+			<label style="width:50px;">City: </label>\
+			<input class="md-input" type="text" ng-model="addressInput.city"></input>\
+		</div>\
+		<div ng-if="errors.city" class="tempAddressError">{{errors.city}}</div>\
+		<div style="padding-top:5px;" layout="row">\
+			<label style="width:50px;">State: </label>\
+			<input class="md-input" type="text" ng-model="addressInput.state_province"></input>\
+		</div>\
+		<div ng-if="errors.state_province" class="tempAddressError">{{errors.state_province}}</div>\
+		<div style="padding-top:5px;" layout="row">\
+			<label style="width:50px;">Zip: </label>\
+			<input class="md-input" type="text" ng-model="addressInput.postal_code"></input>\
+		</div>\
+		<div ng-if="errors.postal_code" class="tempAddressError">{{errors.postal_code}}</div>\
+		<input ng-if="shownAddressLines < 5" type="submit" class="md-button md-raised" (click)="showNextLine()" value="Add Another Line"></input>\
+		<input type="submit" class="md-button md-raised" (click)="setTemporaryAddress()" value="Save Temporary Address"></input>\
+		<input type="submit" class="md-button md-raised" (click)="hideInput()" value="Cancel"></input>\
+	</form>\
+  </div>',
+});
 
 //third iron integration
 angular.module('thirdIron', []).controller('thirdIronController', function($scope) {
