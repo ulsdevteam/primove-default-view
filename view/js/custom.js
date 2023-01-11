@@ -556,3 +556,11 @@ angular.module('thirdIron', []).controller('thirdIronController', function($scop
 	require: {prmSearchResultAvailabilityLine:'^prmSearchResultAvailabilityLine'},
 	controller: 'thirdIronController',
 });
+
+angular.module('googleAnalytics', []).controller('googleAnalyticsController', function($scope) {
+	this.$onInit = function () {
+
+	}
+}).component('googleAnalytics', {
+	require:
+});
