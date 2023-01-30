@@ -11,7 +11,7 @@ function chatWidget() {
 	else {
 		protocol='http://';
 	}
-	lc.src = protocol + 'pitt.libanswers.com/chat/widget/a962140fb4e6ffbcdae688be4c64cba5';
+	lc.src = protocol + 'pitt.libanswers.com/load_chat.php?hash=682f0a4cbcf434ef0a11eeab9cddf016';
 	var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
 }
 
