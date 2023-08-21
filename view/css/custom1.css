@@ -161,6 +161,31 @@ prm-search-bookmark-filter #fixed-buttons-holder #favorites-button md-icon svg {
 	}
 }
 
+/*
+	As of the March release, the advanced search form collapses after it's been used. This
+	should prevent its collapse. I copied the selector, but "prm-search-bar .shrink-content"
+	was the original selector we were interested in and that's the one I've added some
+	specificity to.
+
+	As of the May release, we also have a display: none !important; rule we need to deal
+	with, but only on the search fields. For some reason.
+*/
+prm-atoz-search-bar .shrink-content,
+prm-browse-search-bar .shrink-content,
+prm-newspapers-search-bar .shrink-content,
+prm-search-bar .shrink-content.advanced-search-tabs,
+prm-tags-search-bar .shrink-content {
+	max-height: fit-content;
+}
+
+div.advanced-search-tabs md-card fieldset .ng-hide:not(.ng-hide-animate) {
+	display: block !important; /* YES we need !important, to override ANOTHER !important... */
+}
+
+prm-advanced-search form button.collapsed-button prm-icon[icon-definition="chevron-up"] {
+	display: none;
+}
+
 /* Moving Top of Page Arrow Color Hover*/
 prm-search-bookmark-filter #back-to-top-button:hover {color:#FFB81c;}
 
