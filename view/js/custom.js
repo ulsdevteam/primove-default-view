@@ -101,7 +101,7 @@ function partialPaymentDialog() {
 }
 
 var hathi;
-app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron']);
+app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron', 'authorizeNetPartialPayment']);
 prmSearchResultAvailabilityLineAfterTemplate();
 thirdIron();
 addressSelector();
