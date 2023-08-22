@@ -93,12 +93,19 @@ function addressSelector() {
 	});
 }
 
+function partialPaymentDialog() {
+	app.component('prmFinesAfter', { 
+		bindings: {parentCtrl: '<'}, 
+		template: '<partial-payment parent-ctrl="$ctrl.parentCtrl"></partial-payment>' 
+	});
+}
 
 var hathi;
 app = angular.module('viewCustom', ['angularLoad', 'hathiTrustAvailability', 'addressSelector', 'thirdIron']);
 prmSearchResultAvailabilityLineAfterTemplate();
 thirdIron();
 addressSelector();
+partialPaymentDialog();
 //hideGetItWithHathi();
 bootstrapToULS();
 
