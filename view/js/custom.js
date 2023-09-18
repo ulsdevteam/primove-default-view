@@ -582,22 +582,23 @@ angular.module('authorizeNetPartialPayment', ['ngMaterial'])
 
 	this.overrideLinks = function() {
 		// there are two "Pay Fines" links, one in the account overview and one on the fines & fees tab
-		var payFinesOverviewLink = angular.element(document.getElementsByTagName('prm-fines-overview')).find('a')[0];
-		var payFinesLink = angular.element(document.getElementsByTagName('prm-fines')).find('a')[0];
-		if (!payFinesOverviewLink || !payFinesLink) {
-			// when this controller is initialized, these links aren't populated yet, so wait until they both are
-			setTimeout(self.overrideLinks, 50);
-			return;
-		}
+		var payFinesOverviewLink = angular.element(angular.element(document.getElementsByTagName('prm-fines-overview')).find('a')[0]);
+		var payFinesLink = angular.element(angular.element(document.getElementsByTagName('prm-fines')).find('a')[0]);
 		// remove the href from the links, and instead make them open a dialog
-		var links = angular.element([payFinesLink, payFinesOverviewLink]);
-		links.removeAttr("href");
-		links.attr("role", "button");
-		links.on("click", self.openModal);
+		if (payFinesOverviewLink && payFinesOverviewLink.attr("href")) {
+			payFinesOverviewLink.removeAttr("href");
+			payFinesOverviewLink.attr("role", "button");
+			payFinesOverviewLink.on("click", self.openModal);
+		}
+		if (payFinesLink && payFinesLink.attr("href")) {
+			payFinesLink.removeAttr("href");
+			payFinesLink.attr("role", "button");
+			payFinesLink.on("click", self.openModal);
+		}		
 	};
 
 	this.$onInit = function() {
-		self.overrideLinks();
+		setInterval(self.overrideLinks, 50);
 	};
 
 	$scope.toggleForm = function() {
