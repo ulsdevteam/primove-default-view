@@ -709,6 +709,7 @@ angular.module('authorizeNetPartialPayment', ['ngMaterial'])
 			$scope.totalAmount = 0;
 			let amountRegexp = /\d+(\.\d{2})?/;
 			for (let fee of self.parentCtrl.finesDisplay) {
+				if (fee.fineType != "ACTIVE") { continue; }
 				let libraryName = fee.expandedDisplay.find(item => item.label == 'fines.fine_main_location')?.data;
 				if (!libraryName) {
 					if (allowInstitutionFees) {
