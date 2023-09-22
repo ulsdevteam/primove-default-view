@@ -657,7 +657,7 @@ angular.module('authorizeNetPartialPayment', ['ngMaterial'])
 			<div class="finesPaymentDialog form-focus layout-margin">
 				<h2>Fine + Fee Payment</h2>
 				<div style="margin: 15px">
-					<h3 ng-if="allowedFees.length > 0">Pay online</h3>
+					<h3 ng-if="allowedFees.length > 0">Pay online with Mastercard or Visa</h3>
 					<form ng-if="allowedFees.length > 0" ng-submit="submit()">
 						<div class="fees" ng-repeat="fee in allowedFees" layout="column">
 							<strong>{{fee.firstLineLeft}}</strong>
@@ -687,7 +687,8 @@ angular.module('authorizeNetPartialPayment', ['ngMaterial'])
 						</div>
 						<span ng-if="errors['other']" class="error">{{errors['other']}}</span>
 					</form>
-					<h3 ng-if="excludedFees.length > 0">Pay in person</h3>
+					<h3 ng-if="allowedFees.length > 0 && excludedFees.length == 0">Or pay in person at issuing library</h3>
+					<h3 ng-if="excludedFees.length > 0">Pay in person at issuing library</h3>
 					<div class="fees" ng-repeat="fee in excludedFees" layout="column">
 						<strong>{{fee.firstLineLeft}}</strong>
 						<span>{{fee.secondLineLeft}}</span>
@@ -745,5 +746,5 @@ angular.module('authorizeNetPartialPayment', ['ngMaterial'])
 	require: { primoExplore: '^primoExplore' },
 	bindings: { parentCtrl: '<' },
 	controller: 'partialPaymentController',
-	template: ''
+	template: '<span>Pay online with Mastercard or Visa, or pay in person.</span>'
 });
