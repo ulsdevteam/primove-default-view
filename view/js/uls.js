@@ -41,6 +41,3 @@ import { addGoogleAnalytics } from "./uls-addGoogleAnalytics.js";
 	var pittJSInstance = pittJS();
 	pittJSInstance.setupConstructor();
 })();
-
-
-//prmBriefResultContainerAfter
