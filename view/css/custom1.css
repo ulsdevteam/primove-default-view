@@ -17,6 +17,20 @@ prm-search > md-content.md-primoExplore-theme .main {
 
 */
 
+/* Holiday 2023 alert */
+
+.header::before {
+  content: "Please note that some library services (Ask Us, Get It, ILL, EZBorrow) will not be available during the University winter recess dates of December 22-January 1.";
+  height: 100%;
+  width: 100%;
+  padding: 1% 0;
+  background-color: #feb81c;
+  color: #000;
+  text-align: center;
+  font-size: large;
+  font-weight: 800;
+}
+
 /* Import Open Sans and Rubik Fonts from Google */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap');
 
