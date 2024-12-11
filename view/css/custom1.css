@@ -199,11 +199,6 @@ prm-newspapers-facet > .md-button.button-as-link {
 	display:none;
 }
 
-/* Remove the last LI in the UL saying there are no results for your search */
-prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
-	display:none;
-}
-
 /* Override the CSS that hides the checkboxes for the facets by scaling them down to zero. Basically, we want the facet checkboxes to always be visible. */
 .multiselect-facet-group.multiselect-inactive .md-chip md-checkbox {
 	transform: scale3d(1,1,1);
