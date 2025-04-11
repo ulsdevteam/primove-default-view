@@ -232,10 +232,7 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
 }
 /*Hillman Closed Messaging*/
 .header::before {
-  content: "Hillman Library closed to the public May 1–7. Select an alternate Oakland pick up location for timely delivery.
-Bevier Science & Engineering Library
-Finney Music Library
-Frick Fine Arts Library";
+  content: "Hillman Library closed to the public May 1–7. Select an alternate Oakland pick up location for timely delivery.";
   height: 100%;
   width: 100%;
   padding: 1% 0;
