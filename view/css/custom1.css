@@ -230,7 +230,20 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
 .multiselect-facet-group .md-chip .md-chip-content md-checkbox {
 	left: 5px;
 }
+/*Hillman Closed Messaging*/
+prm-search-result-tool-bar::after {
+  content: "Hillman Library closed to the public May 1–7. Select an alternate Oakland pick up location for timely delivery.
 
+Bevier Science & Engineering Library
+Finney Music Library
+Frick Fine Arts Library";
+  display: block;
+  margin: 10px 0px;
+  color: #000;
+  font-weight: bold;
+  background-color: #ffb71b;
+  padding: 5px 10px;
+}
 /*Library Blocks on Homepage*/
 
 #libcontainer{display:flex;align-items:start;flex-wrap:wrap;flex-direction:row;min-width:980px;max-width:980px;}
