@@ -1,4 +1,8 @@
-
+/*GetIt form*/
+/*Remove Archives and Special Collections as an option*/
+md-option[value='112061040006236$$LIBRARY'] {
+	display: none !important;
+}
 
 /*Uncomment the following lines to move facets to the left*/
 
@@ -231,6 +235,7 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
 	left: 5px;
 }
 /*Hillman Closed Messaging*/
+/*
 .header::before {
   content: "Hillman Library closed to the public May 1–7. Select an alternate Oakland pick up location for timely delivery.";
   height: 100%;
@@ -242,6 +247,7 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
   font-size: Medium;
   font-weight: 800;
 }
+*/
 /*Library Blocks on Homepage*/
 
 #libcontainer{display:flex;align-items:start;flex-wrap:wrap;flex-direction:row;min-width:980px;max-width:980px;}
