@@ -230,10 +230,10 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
 .multiselect-facet-group .md-chip .md-chip-content md-checkbox {
 	left: 5px;
 }
-/*Hillman Closed Messaging*/
+/*Alert Messaging*/
 /*
 .header::before {
-  content: "Hillman Library closed to the public May 1–7. Select an alternate Oakland pick up location for timely delivery.";
+  content: "Finney Music Library and Frick Fine Arts Library are Temporarily Closed. Check <a href="https://library.pitt.edu/hours">library hours</a> for updated information.";
   height: 100%;
   width: 100%;
   padding: 1% 0;
