@@ -231,9 +231,10 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
 	left: 5px;
 }
 /*Alert Messaging*/
-/*
+
 .header::before {
-  content: "Finney Music Library and Frick Fine Arts Library are Temporarily Closed. Check <a href="https://library.pitt.edu/hours">library hours</a> for updated information.";
+/* prm-topbar::before { */
+  content: "Finney Music Library is Temporarily Closed. Check our library hours page for updated information.";
   height: 100%;
   width: 100%;
   padding: 1% 0;
@@ -243,7 +244,7 @@ prm-no-search-result md-card md-card-content ul>li:nth-child(5) {
   font-size: Medium;
   font-weight: 800;
 }
-*/
+
 /*Library Blocks on Homepage*/
 
 #libcontainer{display:flex;align-items:start;flex-wrap:wrap;flex-direction:row;min-width:980px;max-width:980px;}
@@ -417,4 +418,10 @@ div.md-datepicker-calendar-pane {
 	font-size: small;
 	font-weight: bold;
 	color: red;
+}
+
+/*GetIt form*/
+/*Remove Archives and Special Collections as an option*/
+md-option[value='112061040006236$$LIBRARY'] {
+	display: none !important;
 }
